@@ -1,25 +1,35 @@
 //7월8일
+//ArrayList를 여러개만들어서 관리하기? - 완
+// canJump구현하기 (카운트 구현완료) -> 점프 기본값1, 점프시 -1, 0이상일때만 점프가능, Label객체 구현
+// energy먹는것 구현하기 -> energy 먹으면 jumpNumber+1, energy는 좌표값이동시켜서 사라지게만듬
+
+
 
 package JAVADOT_pkg;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class JAVADOT_ver1 extends Application {
+public class JAVADOT_ver4 extends Application {
 
 	private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
-	private ArrayList<Node> objects = new ArrayList<Node>();
+	private ArrayList<Node> blocks = new ArrayList<Node>();
+	private ArrayList<Node> energys = new ArrayList<Node>();
+	private ArrayList<Node> doors = new ArrayList<Node>();
 	private Pane mainContainer = new Pane();
 	private Pane blockContainer = new Pane();
 	
@@ -28,6 +38,11 @@ public class JAVADOT_ver1 extends Application {
 	private int levelWidth;
 	private Point2D playerVelocity = new Point2D(0, 0);
 	private boolean canJump = true;
+	
+	int jumpNumber;
+	
+	Label jumpCount = new Label();
+	Button jumpCountButton = new Button();
 	
 	private Node createObject(int x, int y, int w, int h, Color color) {
 		Rectangle object = new Rectangle(w, h);
@@ -39,11 +54,23 @@ public class JAVADOT_ver1 extends Application {
 		return object;
 	}
 	
+	
 	private void MainPage() {
-		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTGOLDENRODYELLOW);
+		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
+		
+		jumpNumber = 1; //최초생성값
+		jumpCount.setText("JUMP COUNT "+jumpNumber);
+		jumpCountButton.setLayoutX(10);
+		jumpCountButton.setOpacity(0);
+		jumpCountButton.setOnKeyPressed(e->{
+			if (e.getCode() == KeyCode.SPACE && player.getTranslateY() > -100 && jumpNumber > 0 ) {
+				jumpNumber--;
+				jumpCount.setText("JUMP COUNT "+jumpNumber);
+				jumpPlayer();
+				}
+		});
 		
 		levelWidth = ObjectData.LEVEL1[0].length() * 10;
-		
 		
 		for (int i = 0; i < ObjectData.LEVEL1.length; i++) {
 			String line = ObjectData.LEVEL1[i];
@@ -53,21 +80,34 @@ public class JAVADOT_ver1 extends Application {
 						break;
 					case '1':
 						Node block = createObject(j*10, i*10, 10, 10, Color.LIGHTGREEN);
-						objects.add(block);
+						blocks.add(block);
 						break;
 					case '2':
 						Node energy = createObject(j*10, i*10, 5, 5, Color.ORANGE);
-						objects.add(energy);
+						energys.add(energy);
 						break;
 					case '3':
 						Node door = createObject(j*10, i*10, 10, 10, Color.BLACK);
-						objects.add(door);
+						doors.add(door);
 						break;
+					case '4':
+						Node sunR = createObject(j*10, i*10, 10, 10, Color.TOMATO);
+						doors.add(sunR);
+						break;
+					case '5':
+						Node sunY = createObject(j*10, i*10, 10, 10, Color.YELLOW);
+						doors.add(sunY);
+						break;
+					case '6':
+						Node cloud = createObject(j*10, i*10, 10, 10, Color.WHITE);
+						doors.add(cloud);
+						break;	
 //						private ArrayList<Node> platforms = new ArrayList<Node>();						
 				}
 			}
 		}
 		player = createObject(0, 600, 20, 20, Color.DODGERBLUE);
+		
 		player.translateXProperty().addListener((obs, old, newValue) -> {
 			int offset = newValue.intValue();
 			if (offset > 640 && offset < levelWidth - 640) {
@@ -75,7 +115,7 @@ public class JAVADOT_ver1 extends Application {
 			}
 		});
 		
-		mainContainer.getChildren().addAll(bg, blockContainer);
+		mainContainer.getChildren().addAll(bg, blockContainer, jumpCount, jumpCountButton);
 	}
 	
 	private boolean isPressed(KeyCode key) {
@@ -91,11 +131,11 @@ public class JAVADOT_ver1 extends Application {
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 40 <= levelWidth -  5) { // RIGHT키를 누르고 player객체의 x값+20(player객체크기)이 맵의 WIDTH보다 작거나 같다면 movePlayerX의 매개변수로 2를 입력
 			movePlayerX(6);		
 			}
-		//
-		if (isPressed(KeyCode.SPACE) && player.getTranslateY() > -100) {
-			jumpPlayer();
-		}
-//		//
+//		
+//		if (isPressed(KeyCode.SPACE) && player.getTranslateY() > -100 && jumpNumber > 0) {
+//			jumpPlayer();
+//		}
+//		
 		if (playerVelocity.getY() < 10) { 
 			playerVelocity = playerVelocity.add(0, 2);	//playerVelocity의 y값이 10보다 작으면 1프레임당 y값 1씩추가
 			}
@@ -106,7 +146,7 @@ public class JAVADOT_ver1 extends Application {
 		boolean movingRight = value > 0; // LEFT=false, RIGHT=true
 		
 			for (int i = 0; i < Math.abs(value); i++) {
-				for (Node block : objects) { //만들어서 objects라는 객체로 만들어놓은 ArrayList에 넣어둔 block를 하나씩 player와 비교 -> block노드를 사용가능
+				for (Node block : blocks) { //만들어서 objects라는 객체로 만들어놓은 ArrayList에 넣어둔 block를 하나씩 player와 비교 -> block노드를 사용가능
 					if (player.getBoundsInParent().intersects(block.getBoundsInParent())) {
 						if (movingRight) {	//RIGHT
 							if (player.getTranslateX() + 20 == block.getTranslateX()) { // 우측방향 이동시 player의 x값은 block+20 block의 x값과 같다면
@@ -127,9 +167,16 @@ public class JAVADOT_ver1 extends Application {
 				}
 				player.setTranslateX(player.getTranslateX()+(movingRight ? 1 : -1)); // RIGHT버튼을 누르면 player객체의 x위치를 +1만큼씩, LEFT버튼을 누르면 x위치를 -1만큼씩이
 			}
-			for (Node door : objects) {
+			for (Node energy : energys) {
+				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
+					jumpNumber = jumpNumber+1;
+					jumpCount.setText("JUMP COUNT "+jumpNumber);
+					energy.setTranslateY(energy.getTranslateY()+500);//energy 먹으면 jumpNumber+1, energy 사라지
+				}
+			}
+			for (Node door : doors) {
 				if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
-					System.out.println("1");
+					System.out.println("door touch");
 				}
 			}
 		}
@@ -137,7 +184,7 @@ public class JAVADOT_ver1 extends Application {
 		boolean movingDown = value > 0;
 				
 				for (int i = 0; i < Math.abs(value); i++) {
-					for (Node block : objects) {
+					for (Node block : blocks) {
 						if (player.getBoundsInParent().intersects(block.getBoundsInParent())) { //player와 block비교
 							if (movingDown) {
 								if (player.getTranslateY() + 20 == block.getTranslateY()) { // player객체 y값 +20(객체높이) = block객체 y값 이라면
@@ -145,7 +192,7 @@ public class JAVADOT_ver1 extends Application {
 									canJump=true;
 									return;
 								}
-							 else {
+							} else {
 								if (player.getTranslateY() == block.getTranslateY() + 9) { // 점프시 윗벽이 막혀있으면 더 안올라가짐
 									canJump=false;
 									return;
@@ -155,8 +202,12 @@ public class JAVADOT_ver1 extends Application {
 					}
 					player.setTranslateY(player.getTranslateY()+(movingDown ? 1 : -1)); //player객체의 위치 = player객체의 이동좌표+ movingDown이 참이라면 +1 거짓이면 -1
 				}
+				for (Node door : doors) {
+					if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
+						System.out.println("door touch");
+					}
+				}
 			}
-	}
 	//
 	private void jumpPlayer() {
 		if (canJump) {
@@ -165,10 +216,11 @@ public class JAVADOT_ver1 extends Application {
 		}
 	}
 	
+Stage window;
 	//
 	@Override
 	public void start(Stage primaryStage) {
-		
+
 		MainPage();
 		
 		Scene scene = new Scene(mainContainer);
@@ -176,6 +228,17 @@ public class JAVADOT_ver1 extends Application {
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
 		primaryStage.setTitle("JAVADOT");
 		primaryStage.setScene(scene);
+		
+		window = primaryStage;
+		for (Node door : doors) {
+			if(player.getBoundsInParent().intersects(door.getBoundsInParent())) {
+		
+			System.out.println("760");
+//			window.setScene(scene);
+//			window.show();
+		}
+		}
+		
 		primaryStage.show();
 		
 		AnimationTimer timer = new AnimationTimer() {
