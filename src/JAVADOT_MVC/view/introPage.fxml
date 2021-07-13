@@ -9,7 +9,7 @@
    <children>
       <ImageView fitHeight="720.0" fitWidth="1281.0" layoutX="35.0" pickOnBounds="true" preserveRatio="true" scaleX="1.2">
          <image>
-            <Image url="@../../../../../Downloads/자바닷플랫포머%20소스파일/스크린샷%202021-07-11%20오후%205.12.06.png" />
+            <Image url="@../../../../../Downloads/자바닷플랫포머%20소스파일/스크린샷%202021-07-13%20오전%201.28.48.png" />
          </image></ImageView>
       <Button layoutX="601.0" layoutY="351.0" mnemonicParsing="false" onAction="#gameStartButton" opacity="0.0" text="Button" />
    </children>
