@@ -25,11 +25,13 @@ public class JAVADOT_Controller {
 	public Scene scene;
 	public Node player;
 	public Node levelChange;
+	public Node changeMap;
 	public Pane mainContainer = new Pane();
 	public HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
 	public Point2D playerVelocity = new Point2D(0, 0);
 	public boolean canJump = true;
 	public boolean doorTouch = true;
+	public ArrayList<Node> mapSelect = new ArrayList<Node>();
 	
 	
     //LevelData클래스 사용하기 위한 level객체 생성
@@ -66,9 +68,11 @@ public class JAVADOT_Controller {
 		}
 	}
 	
-	public void mainPage() {
-		levelChange = level.levelData(ObjectData1.LEVEL1); 
-    	//게임프레임, 배경화면 색깔
+	public Node mainPage(String[]levelNumber) {
+		// 맨 위에 위치해야 player객체가 door보다 앞에 표시됨, 매개변수를 매개변수로 넣음
+		levelChange = level.levelData(levelNumber); 
+    	
+		//게임프레임, 배경화면 색깔
 		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
 		
         // jumpCount, jumpCountButton
@@ -77,18 +81,20 @@ public class JAVADOT_Controller {
 		// createObject (blockContainer)
 		player = level.createObject(0, 600, 20, 20, Color.DODGERBLUE); 
 		
-//        // 맵을 만드는 LevelData클래스의 객체 level생성
-//        level.levelData(ObjectData1.LEVEL1); 
-		
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
+		return mainContainer;
 	}
 	
-	public boolean isPressed(KeyCode key) {
+		public boolean isPressed(KeyCode key) {
 		//	key가 존재하면 key값을 반환하고 존재하지않으면 디폴트값인 false를 반환		
         return keys.getOrDefault(key, false);
 	}
+		
+		
 	// AnimationTimer로 매번 업데이트
 	public void sceneUpdate() { 
+		
+		
 		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6를 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
 			movePlayerX(-6);
@@ -113,14 +119,19 @@ public class JAVADOT_Controller {
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
 				doorTouch = true;
 				if(isPressed(KeyCode.UP) && doorTouch) {
-					player.setTranslateY(400);
-					player.setTranslateX(0);
+//					player.setTranslateY(400);
+//					player.setTranslateX(0);
+//					level.blockContainer.setLayoutX(0);
 					level.blockContainer.setLayoutX(0);
 					doorTouch = false;
 						//어떻게 화면전환할지..scene을 변경하는법을 거꾸로 하나씩 적어가면서 생각해보자
 						//door터치+up키 누르면 doorTouch의 값을 false로 바꿔준다
 						//이걸이용해서 스테이지 넘어가도록 구현?
-						//예를들어 if도어터치가 true이고 if레벨체인지가 level1이면 level2로,2면3으
+						//예를들어 if도어터치가 true이고 if레벨체인지가 level1이면 level2로,2면3으로
+					// ArrayList로 해결해보기 (어디에선언해야하는지, 어떻게 적용해야할지 고민)
+//					mapSelect.add(mainPage(ObjectData1.LEVEL1));
+//					mapSelect.add(mainPage(ObjectData1.LEVEL2));
+					
 					}
 				}	
 			}
@@ -131,6 +142,13 @@ public class JAVADOT_Controller {
 			player.setTranslateX(0);
 			level.blockContainer.setLayoutX(0);
 		}	
+//		if (player.getTranslateX()>1000) {
+////			if(changeMap == mainPage(ObjectData1.LEVEL1)) {
+////				stage.setScene(scene);
+//				level.blockContainer.setLayoutX(0);
+//				changeMap = mainPage(ObjectData1.LEVEL2);
+////			} 새로운 씬이 나오기는 하
+//		}
 	}
 	public void movePlayerX(int value) {
     	// LEFT=false, RIGHT=true
@@ -175,6 +193,7 @@ public class JAVADOT_Controller {
 				}
 			}
 		}
+	
 	public void movePlayerY(int value) {
 		boolean movingDown = value > 0;
 				
@@ -213,12 +232,18 @@ public class JAVADOT_Controller {
 			}
 	
 	public void gameStartButton(ActionEvent event) throws IOException {
-		// mainPage보다 위에 위치해야 player객체가 door보다 앞에 표시됨
-		//(메서드로 만들어서 i+1 이렇게 맵을 넘길지 아니면 if문으로 level1이면 level2로 이런식으로 할지)
-//		levelChange = level.levelData(ObjectData1.LEVEL1); 
 		
-		mainPage();
-        
+		
+		
+		
+		changeMap = mainPage(ObjectData1.LEVEL1);
+		// if (블럭과 플레이어가 겹쳤고 UP버튼을 눌렀을때)
+		// if (changeMap == mainPage(ObjectData1.LEVEL1)) {
+		// 	changeMap = mainPage(ObjectData1.LEVEL2) 
+        // }else if((changeMap == mainPage(ObjectData1.LEVEL2)){
+		// 	changeMap = mainPage(ObjectData1.LEVEL3)
+		// } 이런식으로 스테이지넘기기? 이게구현되면 죽는것도구현할 수 있음
+		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(mainContainer);
 		stage.setTitle("JAVADOT");
@@ -227,6 +252,14 @@ public class JAVADOT_Controller {
 		
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
+		
+		
+//		button.setOnKeyPressed(e -> {
+//			if (e.getCode() == KeyCode.N) {
+//				System.out.println("IT'S N");
+//			}
+//		}); 버튼눌러서 다음스테이지로 가게하려면 버튼이 스페이스바에 반응하지 않도록 구현해야함
+		
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
