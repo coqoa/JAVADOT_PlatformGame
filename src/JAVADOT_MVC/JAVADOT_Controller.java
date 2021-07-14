@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -67,6 +67,7 @@ public class JAVADOT_Controller {
 	}
 	
 	public void mainPage() {
+		levelChange = level.levelData(ObjectData1.LEVEL1); 
     	//게임프레임, 배경화면 색깔
 		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
 		
@@ -111,22 +112,26 @@ public class JAVADOT_Controller {
 		for (Node door : level.doors) { // player와 door 충돌구현, 일단은 충돌시 꺼지게 해놨음
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
 				doorTouch = true;
-				if(doorTouch) {
+				if(isPressed(KeyCode.UP) && doorTouch) {
+					player.setTranslateY(400);
+					player.setTranslateX(0);
+					level.blockContainer.setLayoutX(0);
 					doorTouch = false;
-					System.out.println("door touch");
-					stage.close();
-					//door터치시 doorTouch의 값을 false로 바꿔준다
-					//이걸이용해서 스테이지 넘어가도록 구현?
-					//예를들어 if도어터치가 true이고 if레벨체인지가 level1이면 level2로,2면3으
-				}
+						//어떻게 화면전환할지..scene을 변경하는법을 거꾸로 하나씩 적어가면서 생각해보자
+						//door터치+up키 누르면 doorTouch의 값을 false로 바꿔준다
+						//이걸이용해서 스테이지 넘어가도록 구현?
+						//예를들어 if도어터치가 true이고 if레벨체인지가 level1이면 level2로,2면3으
+					}
+				}	
 			}
-		}
 		//낙하시 사망구현코드 (level1으로 돌아가도록 구현할 예정)
-		if (player.getTranslateY()>720)  {
-			System.out.println("die");
+		// 일단 맵이동은 구현완료, 초기화는 어떻게할지 ?
+		if (player.getTranslateY()>820)  {
+			player.setTranslateY(400);
+			player.setTranslateX(0);
+			level.blockContainer.setLayoutX(0);
 		}	
 	}
-	
 	public void movePlayerX(int value) {
     	// LEFT=false, RIGHT=true
 		boolean movingRight = value > 0; 
@@ -208,12 +213,11 @@ public class JAVADOT_Controller {
 			}
 	
 	public void gameStartButton(ActionEvent event) throws IOException {
+		// mainPage보다 위에 위치해야 player객체가 door보다 앞에 표시됨
+		//(메서드로 만들어서 i+1 이렇게 맵을 넘길지 아니면 if문으로 level1이면 level2로 이런식으로 할지)
+//		levelChange = level.levelData(ObjectData1.LEVEL1); 
 		
 		mainPage();
-		// 맵을 만드는 LevelData클래스의 객체 level생성 옮겼음
-        // levelChange변수를 이용해서 level을 변화시킴
-		//(메서드로 만들어서 i+1 이렇게 맵을 넘길지 아니면 if문으로 level1이면 level2로 이런식으로 할지)
-		levelChange = level.levelData(ObjectData1.LEVEL1); 
         
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(mainContainer);
@@ -223,9 +227,6 @@ public class JAVADOT_Controller {
 		
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
-		
-		
-		
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
@@ -293,7 +294,5 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 		return blockContainer;
 	}
 }
-//class Level2 extends LevelData{
-//}
 
 
