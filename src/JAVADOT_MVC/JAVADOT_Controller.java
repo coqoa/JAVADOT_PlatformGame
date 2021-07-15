@@ -166,7 +166,7 @@ public class JAVADOT_Controller {
 									player.setTranslateY(player.getTranslateY()-10);
 								}
 								return;
-							}
+							}  
 						} else  {	//LEFT
                         	// LEFT입력시 player의 왼쪽경계와 block의 오른쪽 경계가 맞닿았을때
 							if (player.getTranslateX() == block.getTranslateX() + 10) { 
