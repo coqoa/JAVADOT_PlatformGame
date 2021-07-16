@@ -30,7 +30,7 @@ public class JAVADOT_Controller {
 	public HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
 	public Point2D playerVelocity = new Point2D(0, 0);
 	public boolean canJump = true;
-	public boolean doorTouch = true;
+	public boolean doorTouch = false;
 	public ArrayList<Node> mapSelect = new ArrayList<Node>();
 	
 	
@@ -119,12 +119,16 @@ public class JAVADOT_Controller {
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
 				doorTouch = true;
 				if(isPressed(KeyCode.UP) && doorTouch) {
-//					player.setTranslateY(400);
-//					player.setTranslateX(0);
-//					level.blockContainer.setLayoutX(0);
-					level.blockContainer.setLayoutX(0);
-					doorTouch = false;
-						//어떻게 화면전환할지..scene을 변경하는법을 거꾸로 하나씩 적어가면서 생각해보자
+
+					player.setTranslateX(-20); //기존의 player객체를 없애는 메소드
+					level.blockContainer.setLayoutX(0); //화면 맨왼쪽에 위치시키는 메소드
+
+//					changeMap = mainPage(ObjectData1.LEVEL2);
+					scene = new Scene(mainContainer);
+					stage.setScene(scene);
+					stage.show();
+
+					//어떻게 화면전환할지..scene을 변경하는법을 거꾸로 하나씩 적어가면서 생각해보자
 						//door터치+up키 누르면 doorTouch의 값을 false로 바꿔준다
 						//이걸이용해서 스테이지 넘어가도록 구현?
 						//예를들어 if도어터치가 true이고 if레벨체인지가 level1이면 level2로,2면3으로
@@ -166,7 +170,7 @@ public class JAVADOT_Controller {
 									player.setTranslateY(player.getTranslateY()-10);
 								}
 								return;
-							}  
+							}
 						} else  {	//LEFT
                         	// LEFT입력시 player의 왼쪽경계와 block의 오른쪽 경계가 맞닿았을때
 							if (player.getTranslateX() == block.getTranslateX() + 10) { 
@@ -233,9 +237,6 @@ public class JAVADOT_Controller {
 	
 	public void gameStartButton(ActionEvent event) throws IOException {
 		
-		
-		
-		
 		changeMap = mainPage(ObjectData1.LEVEL1);
 		// if (블럭과 플레이어가 겹쳤고 UP버튼을 눌렀을때)
 		// if (changeMap == mainPage(ObjectData1.LEVEL1)) {
@@ -252,7 +253,6 @@ public class JAVADOT_Controller {
 		
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
-		
 		
 //		button.setOnKeyPressed(e -> {
 //			if (e.getCode() == KeyCode.N) {
@@ -279,6 +279,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 	public ArrayList<Node> bgObject = new ArrayList<Node>(); 
 	
 	public Node createObject(int x, int y, int w, int h, Color color) {
+		
 		Rectangle object = new Rectangle(w, h);
 		object.setTranslateX(x);
 		object.setTranslateY(y);
@@ -291,6 +292,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 //		level.levelData(ObjectData1.LEVEL1); 이렇게 사용가능
 		
 		levelWidth = levelNumber[0].length() * 10; 
+		
 		for (int i = 0; i < levelNumber.length; i++) {
 			String line = levelNumber[i];
 			for (int j = 0; j < line.length(); j++) {
