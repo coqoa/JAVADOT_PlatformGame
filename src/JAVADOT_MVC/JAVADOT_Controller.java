@@ -119,11 +119,13 @@ public class JAVADOT_Controller {
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
 				doorTouch = true;
 				if(isPressed(KeyCode.UP) && doorTouch) {
-
-					player.setTranslateX(-20); //기존의 player객체를 없애는 메소드
+					doorTouch = false;
+					player.setTranslateX(-40); //기존의 player객체를 없애는 메소드
 					level.blockContainer.setLayoutX(0); //화면 맨왼쪽에 위치시키는 메소드
-
-//					changeMap = mainPage(ObjectData1.LEVEL2);
+//					mainContainer.getChildren().clear();
+//					씬을 지우거나 교체를해야함
+					changeMap = mainPage(ObjectData1.LEVEL1);
+//					mainContainer.getChildren().add(level.blockContainer);
 					scene = new Scene(mainContainer);
 					stage.setScene(scene);
 					stage.show();
