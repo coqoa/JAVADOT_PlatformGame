@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -23,29 +22,20 @@ import javafx.stage.Stage;
 
 public class JAVADOT_Controller {
 	public Stage stage;
-	public Scene scene, scene1;
+	public Scene scene;
 	public Node player;
-	public Node changeMap;
 	public Pane mainContainer = new Pane();
-//	public Pane mainContainer1 = new Pane(); scene교체하려면 scene마다 다른 container필요
-//	public Pane mainContainer2 = new Pane();
+	public Pane mainContainer1 = new Pane();
 	public HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
 	public Point2D playerVelocity = new Point2D(0, 0);
 	public boolean canJump = true;
 	public boolean doorTouch = false;
 	public ArrayList<Node> mapSelect = new ArrayList<Node>();
-	public Rectangle bg;
-	
-	// 쓰레드 사용 연습
-//	public Thread moveMap1 = new Thread(new Runnable() { 
-//		@Override
-//		public void run() {
-//			level.levelData(ObjectData1.LEVEL1);
-//		}
-//	});
+	public Node levelNumber;
 	
     //LevelData클래스 사용하기 위한 level객체 생성
 	LevelData level = new LevelData(); 
+	JAVADOT_Main mainClass = new JAVADOT_Main();
 	
 	///점프관련 변수, 메서드
 	int jumpNumber;
@@ -77,13 +67,15 @@ public class JAVADOT_Controller {
 			canJump = false;
 		}
 	}
-////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public Node mainPage(String[]levelNumber) {
-		// 화면에 쌓이는 순서대로 배치 (플레이어가 맨 위에 배치)
-		level.mapData(levelNumber); 
+//	public Node mainPage() {
+		// 맨 위에 위치해야 player객체가 door보다 앞에 표시됨, 매개변수를 매개변수로 넣음
+		level.levelData(levelNumber); 
+//		level.levelData1(); 
     	
 		//게임프레임, 배경화면 색깔
-		bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
+		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
 		
         // jumpCount, jumpCountButton
 		jumpData(); 
@@ -95,9 +87,6 @@ public class JAVADOT_Controller {
 		return mainContainer;
 	}
 	
-	
-
-	
 		public boolean isPressed(KeyCode key) {
 		//	key가 존재하면 key값을 반환하고 존재하지않으면 디폴트값인 false를 반환		
         return keys.getOrDefault(key, false);
@@ -105,7 +94,8 @@ public class JAVADOT_Controller {
 		
 		
 	// AnimationTimer로 매번 업데이트
-	public void updateScene() { 
+	public void sceneUpdate() { 
+		
 		
 		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6를 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
@@ -127,45 +117,41 @@ public class JAVADOT_Controller {
 		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
 			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
 		}
-		
 		for (Node door : level.doors) { // player와 door 충돌구현, 일단은 충돌시 꺼지게 해놨음
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
 				doorTouch = true;
 				if(isPressed(KeyCode.UP) && doorTouch) {
-					System.out.println("dddd");
-					player.setTranslateX(50);
-					level.blockContainer.setLayoutX(0); //화면 맨왼쪽에 위치시키는 메소드
+//					level.blockContainer.getChildren().clear();
+//					level.blockContainer.getChildren().removeAll(mapSelect);
+//					mainContainer.getChildren().removeAll(mapSelect);
+					
 //					stage.close();
-//					stage.setScene(scene);
-//					stage.show();
+//					stage.setScene(new Scene(mainContainer));
 
-//						mainPage(ObjectData1.LEVEL2);
-//						Platform.exit();
-						level.mapData(ObjectData1.LEVEL2);
-//						mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
-//						bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
-//						jumpData();
-						 //기존의 player객체를 없애는 메소드 // 단순 처음으로 돌아가게만함 맵초기화하는 방법만 알면되는데..
-						
-//					level.levelData(ObjectData1.LEVEL2);
-					
-//					mainContainer.getChildren().removeAll(bg, level.blockContainer, jumpCount, jumpCountButton);
-//					bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
-//					jumpData();
-//					mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
-					
-//					player.setTranslateX(50); //기존의 player객체를 없애는 메소드 // 단순 처음으로 돌아가게만함 맵초기화하는 방법만 알면되는데..
+//					mainContainer.getChildren().remove(level.blockContainer);
+//					try {
+//						mainClass.start(stage);
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//					player.setTranslateX(-40); //기존의 player객체를 없애는 메소드
 //					level.blockContainer.setLayoutX(0); //화면 맨왼쪽에 위치시키는 메소드
-//					System.out.println("dddd");
+//					
+//					Node levelNumber을 삭제하는 방법?
 					
-//					mainContainer.getChildren().clear();
-				
+					doorTouch = false;
+//					if (levelNumber == mainPage(ObjectData1.LEVEL1)) {
+//					levelNumber = mainPage(ObjectData1.LEVEL1);
+//					levelNumber = mainPage(ObjectData1.LEVEL2);
+//					}else {
+//						levelNumber = mainPage(ObjectData1.LEVEL0);
+//					}
 //					씬을 지우거나 교체를해야함
 //					mainContainer.getChildren().add(level.blockContainer);
 //					scene = new Scene(mainContainer);
 //					stage.setScene(scene);
 //					stage.show();
-					
+
 					//어떻게 화면전환할지..scene을 변경하는법을 거꾸로 하나씩 적어가면서 생각해보자
 						//door터치+up키 누르면 doorTouch의 값을 false로 바꿔준다
 						//이걸이용해서 스테이지 넘어가도록 구현?
@@ -175,22 +161,22 @@ public class JAVADOT_Controller {
 //					mapSelect.add(mainPage(ObjectData1.LEVEL2));
 					
 					}
-				}
+				}	
 			}
 		//낙하시 사망구현코드 (level1으로 돌아가도록 구현할 예정)
 		// 일단 맵이동은 구현완료, 초기화는 어떻게할지 ?
-		if (player.getTranslateY()>820)  {
-			player.setTranslateY(400);
-			player.setTranslateX(0);
-			level.blockContainer.setLayoutX(0);
+		if (player.getTranslateY()>730)  {
+		// 화면이탈시 scene의 맵을 지우고 Main클래스의 스타트를 실행한다
+			mainContainer.getChildren().remove(level.blockContainer);
+			try {
+				mainClass.start(stage);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		player.setTranslateX(0); //player객체를 이동시켜줘야 반복reset을 막을 수 있음
+		player.setTranslateY(0); 
 		}	
-//		if (player.getTranslateX()>1000) {
-////			if(changeMap == mainPage(ObjectData1.LEVEL1)) {
-////				stage.setScene(scene);
-//				level.blockContainer.setLayoutX(0);
-//				changeMap = mainPage(ObjectData1.LEVEL2);
-////			} 새로운 씬이 나오기는 하
-//		}
+		//
 	}
 	public void movePlayerX(int value) {
     	// LEFT=false, RIGHT=true
@@ -231,7 +217,7 @@ public class JAVADOT_Controller {
 				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
 					jumpNumber = jumpNumber+1;
 					jumpCount.setText(""+jumpNumber);
-					energy.setTranslateY(energy.getTranslateY()+5000);
+					energy.setTranslateY(energy.getTranslateY()+500);
 				}
 			}
 		}
@@ -274,6 +260,8 @@ public class JAVADOT_Controller {
 			}
 	
 	public void gameStartButton(ActionEvent event) throws IOException {
+		
+		levelNumber = mainPage(ObjectData1.LEVEL1);
 		// if (블럭과 플레이어가 겹쳤고 UP버튼을 눌렀을때)
 		// if (changeMap == mainPage(ObjectData1.LEVEL1)) {
 		// 	changeMap = mainPage(ObjectData1.LEVEL2) 
@@ -281,16 +269,12 @@ public class JAVADOT_Controller {
 		// 	changeMap = mainPage(ObjectData1.LEVEL3)
 		// } 이런식으로 스테이지넘기기? 이게구현되면 죽는것도구현할 수 있음
 		
-		VBox vBox = new VBox();
-		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-		
-		mainPage(ObjectData1.LEVEL1);
 		scene = new Scene(mainContainer);
-		scene1 = new Scene(vBox, 500, 500);
 		stage.setTitle("JAVADOT");
 		stage.setScene(scene);
 		stage.show();
+		
 		
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
@@ -304,7 +288,7 @@ public class JAVADOT_Controller {
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				updateScene();
+				sceneUpdate();
 			}
 		};
 		timer.start();
@@ -313,6 +297,7 @@ public class JAVADOT_Controller {
 
 class LevelData { //객체생성관련 코드모음 (player, block, energy, door, 등등)
 	public Pane blockContainer = new Pane();
+	public Pane blockContainer1 = new Pane();
 	public int levelWidth;
 	public ArrayList<Node> blocks = new ArrayList<Node>();
 	public ArrayList<Node> energys = new ArrayList<Node>();
@@ -328,7 +313,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 		blockContainer.getChildren().addAll(object);
 		return object;
 	}
-	public Node mapData(String[]levelNumber) {
+	public Node levelData(String[]levelNumber) {
 		
 //		level.levelData(ObjectData1.LEVEL1); 이렇게 사용가능
 		
@@ -345,7 +330,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 						blocks.add(block);
 						break;
 					case '2':
-						Node energy = createObject(j*10, i*10, 5, 5, Color.YELLOW);
+						Node energy = createObject(j*10, i*10, 5, 5, Color.ORANGE);
 						energys.add(energy);
 						break;
 					case '3':
