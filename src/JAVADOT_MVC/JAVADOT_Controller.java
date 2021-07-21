@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -25,28 +25,24 @@ public class JAVADOT_Controller {
 	public Scene scene;
 	public Node player;
 	public Pane mainContainer = new Pane();
-	public Pane mainContainer1 = new Pane();
 	public HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
 	public Point2D playerVelocity = new Point2D(0, 0);
 	public boolean canJump = true;
-	public boolean doorTouch = false;
-	public ArrayList<Node> mapSelect = new ArrayList<Node>();
-	public Node levelNumber;
+	public boolean pressESC;
 	
-    //LevelData클래스 사용하기 위한 level객체 생성
-	LevelData level = new LevelData(); 
+	LevelData level = new LevelData(); //LevelData클래스 사용하기 위한 level객체 생성
 	JAVADOT_Main mainClass = new JAVADOT_Main();
 	
 	///점프관련 변수, 메서드
 	int jumpNumber;
-	Label jumpCount = new Label();
-	Button jumpCountButton = new Button();
-	
+	public Label jumpCount = new Label();
+	public Button jumpCountButton = new Button();
+
 	public void jumpData() {
 		
-		jumpNumber = 1; //점프횟수 기본값
+		jumpNumber = 1; //시작시 가지는 점프횟수 기본값
 		jumpCount.setText(""+jumpNumber); //화면에 출력
-		jumpCount.setTranslateX(630);
+		jumpCount.setTranslateX(630); //출력위치
 		jumpCount.setTranslateY(150);
 		jumpCount.setFont(Font.font("verdana", FontWeight.BOLD, 20));
 		jumpCount.setTextFill(Color.LIGHTGOLDENRODYELLOW);
@@ -68,11 +64,9 @@ public class JAVADOT_Controller {
 		}
 	}
 	
-	public Node mainPage(String[]levelNumber) {
-//	public Node mainPage() {
+	public Node mainPage() {
 		// 맨 위에 위치해야 player객체가 door보다 앞에 표시됨, 매개변수를 매개변수로 넣음
-		level.levelData(levelNumber); 
-//		level.levelData1(); 
+		level.levelData(ObjectData1.LEVEL1); 
     	
 		//게임프레임, 배경화면 색깔
 		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
@@ -82,7 +76,7 @@ public class JAVADOT_Controller {
 			
 		// createObject (blockContainer)
 		player = level.createObject(0, 600, 20, 20, Color.DODGERBLUE); 
-		
+		 
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
 		return mainContainer;
 	}
@@ -105,6 +99,16 @@ public class JAVADOT_Controller {
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
 			movePlayerX(6);	
 		}
+		if (isPressed(KeyCode.ESCAPE)) {
+			if(player.getTranslateX() > 0) {
+			try {
+				player.setTranslateX(player.getTranslateX()-5000);
+				mainClass.start(stage);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			}
+		}
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 담당)
 		if (playerVelocity.getY() < 10) { 
 			playerVelocity = playerVelocity.add(0, 2);	
@@ -112,72 +116,46 @@ public class JAVADOT_Controller {
         //	movePlayerY(int value)에 playerVelocity값 할당
 		movePlayerY((int)playerVelocity.getY()); 
 		
-        // player의 위치 : 640 ~ (전체화면 - 640)사이일때
+        //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
 		//	blockContainer의 X값 이동(-(player의X값-640만))
 		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
 			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
 		}
-		for (Node door : level.doors) { // player와 door 충돌구현, 일단은 충돌시 꺼지게 해놨음
+		
+		for (Node reset : level.resets) { 
+			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
+				// 7번 박스와 충돌하면 재시작
+//				mainContainer.getChildren().clear(); 
+				try {
+					mainClass.start(stage);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			player.setTranslateX(0); //반복적인 rese을 피하기위해 player값의 위치이동
+			player.setTranslateY(0); 
+			}
+		}
+		
+		for (Node door : level.doors) { // 
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
-				doorTouch = true;
-				if(isPressed(KeyCode.UP) && doorTouch) {
-//					level.blockContainer.getChildren().clear();
-//					level.blockContainer.getChildren().removeAll(mapSelect);
-//					mainContainer.getChildren().removeAll(mapSelect);
-					
-//					stage.close();
-//					stage.setScene(new Scene(mainContainer));
-
-//					mainContainer.getChildren().remove(level.blockContainer);
-//					try {
-//						mainClass.start(stage);
-//					} catch (IOException e) {
-//						e.printStackTrace();
+//				if(isPressed(KeyCode.UP)) {
+					if (player.getTranslateY() > 0 && player.getTranslateY() < 720) { //1렙 낙하구
+						level.blockContainer.setLayoutX(0);
+						level.blockContainer.setLayoutY(-810);
+						player.setTranslateX(0); //기존의 player객체를 없애는 메소드
+						player.setTranslateY(1200); //기존의 player객체를 없애는 메소드
+						jumpData();
+					}else if (player.getTranslateY() > 750 && player.getTranslateY() < 1500) { //1렙 낙하구
+						level.blockContainer.setLayoutX(0);
+						level.blockContainer.setLayoutY(-1620);
+						player.setTranslateX(0); //기존의 player객체를 없애는 메소드
+						player.setTranslateY(1920); //기존의 player객체를 없애는 메소드
+						jumpData();
 //					}
-//					player.setTranslateX(-40); //기존의 player객체를 없애는 메소드
-//					level.blockContainer.setLayoutX(0); //화면 맨왼쪽에 위치시키는 메소드
-//					
-//					Node levelNumber을 삭제하는 방법?
-					
-					doorTouch = false;
-//					if (levelNumber == mainPage(ObjectData1.LEVEL1)) {
-//					levelNumber = mainPage(ObjectData1.LEVEL1);
-//					levelNumber = mainPage(ObjectData1.LEVEL2);
-//					}else {
-//						levelNumber = mainPage(ObjectData1.LEVEL0);
-//					}
-//					씬을 지우거나 교체를해야함
-//					mainContainer.getChildren().add(level.blockContainer);
-//					scene = new Scene(mainContainer);
-//					stage.setScene(scene);
-//					stage.show();
-
-					//어떻게 화면전환할지..scene을 변경하는법을 거꾸로 하나씩 적어가면서 생각해보자
-						//door터치+up키 누르면 doorTouch의 값을 false로 바꿔준다
-						//이걸이용해서 스테이지 넘어가도록 구현?
-						//예를들어 if도어터치가 true이고 if레벨체인지가 level1이면 level2로,2면3으로
-					// ArrayList로 해결해보기 (어디에선언해야하는지, 어떻게 적용해야할지 고민)
-//					mapSelect.add(mainPage(ObjectData1.LEVEL1));
-//					mapSelect.add(mainPage(ObjectData1.LEVEL2));
-					
-					}
-				}	
-			}
-		//낙하시 사망구현코드 (level1으로 돌아가도록 구현할 예정)
-		// 일단 맵이동은 구현완료, 초기화는 어떻게할지 ?
-		if (player.getTranslateY()>730)  {
-		// 화면이탈시 scene의 맵을 지우고 Main클래스의 스타트를 실행한다
-			mainContainer.getChildren().remove(level.blockContainer);
-			try {
-				mainClass.start(stage);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		player.setTranslateX(0); //player객체를 이동시켜줘야 반복reset을 막을 수 있음
-		player.setTranslateY(0); 
-		}	
-		//
-	}
+				}
+			}	
+		}
+		}
 	public void movePlayerX(int value) {
     	// LEFT=false, RIGHT=true
 		boolean movingRight = value > 0; 
@@ -217,14 +195,14 @@ public class JAVADOT_Controller {
 				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
 					jumpNumber = jumpNumber+1;
 					jumpCount.setText(""+jumpNumber);
-					energy.setTranslateY(energy.getTranslateY()+500);
+					energy.setTranslateY(energy.getTranslateX()+4000);
 				}
 			}
 		}
 	
 	public void movePlayerY(int value) {
 		boolean movingDown = value > 0;
-				
+		
 				for (int i = 0; i < Math.abs(value); i++) {
 					for (Node block : level.blocks) {
 						//player와 block비교
@@ -261,7 +239,7 @@ public class JAVADOT_Controller {
 	
 	public void gameStartButton(ActionEvent event) throws IOException {
 		
-		levelNumber = mainPage(ObjectData1.LEVEL1);
+		mainPage();
 		// if (블럭과 플레이어가 겹쳤고 UP버튼을 눌렀을때)
 		// if (changeMap == mainPage(ObjectData1.LEVEL1)) {
 		// 	changeMap = mainPage(ObjectData1.LEVEL2) 
@@ -302,6 +280,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 	public ArrayList<Node> blocks = new ArrayList<Node>();
 	public ArrayList<Node> energys = new ArrayList<Node>();
 	public ArrayList<Node> doors = new ArrayList<Node>();
+	public ArrayList<Node> resets = new ArrayList<Node>();
 	public ArrayList<Node> bgObject = new ArrayList<Node>(); 
 	
 	public Node createObject(int x, int y, int w, int h, Color color) {
@@ -348,7 +327,11 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 					case '6':
 						Node cloud = createObject(j*10, i*10, 10, 10, Color.WHITE);
 						bgObject.add(cloud);
-						break;	
+						break;
+					case '7':
+						Node reset = createObject(j*10, i*10, 10, 10, Color.WHITE);
+						resets.add(reset);
+						break;
 				}
 			}
 		}
