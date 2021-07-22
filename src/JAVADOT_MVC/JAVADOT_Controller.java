@@ -124,15 +124,16 @@ public class JAVADOT_Controller {
 		
 		for (Node reset : level.resets) { 
 			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
+				player.setTranslateX(5000); //반복적인 reset을 피하기위해 player값의 위치이동
 				// 7번 박스와 충돌하면 재시작
+//				mainContainer.getChildren().remove(level.blockContainer); 
 //				mainContainer.getChildren().clear(); 
+				stage.close();
 				try {
 					mainClass.start(stage);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			player.setTranslateX(0); //반복적인 rese을 피하기위해 player값의 위치이동
-			player.setTranslateY(0); 
 			}
 		}
 		
@@ -143,7 +144,7 @@ public class JAVADOT_Controller {
 						level.blockContainer.setLayoutX(0);
 						level.blockContainer.setLayoutY(-810);
 						player.setTranslateX(0); //기존의 player객체를 없애는 메소드
-						player.setTranslateY(1200); //기존의 player객체를 없애는 메소드
+						player.setTranslateY(1350); //기존의 player객체를 없애는 메소드
 						jumpData();
 					}else if (player.getTranslateY() > 750 && player.getTranslateY() < 1500) { //1렙 낙하구
 						level.blockContainer.setLayoutX(0);
@@ -257,25 +258,26 @@ public class JAVADOT_Controller {
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
 		
-//		button.setOnKeyPressed(e -> {
-//			if (e.getCode() == KeyCode.N) {
-//				System.out.println("IT'S N");
-//			}
-//		}); 버튼눌러서 다음스테이지로 가게하려면 버튼이 스페이스바에 반응하지 않도록 구현해야함
-		
-		AnimationTimer timer = new AnimationTimer() {
+		Thread updateThread = new Thread() {
 			@Override
-			public void handle(long now) {
-				sceneUpdate();
-			}
+			public void run() {
+				AnimationTimer timer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						sceneUpdate();
+					}
+				};
+				timer.start();
+				}
 		};
-		timer.start();
+		Platform.runLater(updateThread);
+		updateThread.setDaemon(true);
+		updateThread.start();
 	}
 }
 
 class LevelData { //객체생성관련 코드모음 (player, block, energy, door, 등등)
 	public Pane blockContainer = new Pane();
-	public Pane blockContainer1 = new Pane();
 	public int levelWidth;
 	public ArrayList<Node> blocks = new ArrayList<Node>();
 	public ArrayList<Node> energys = new ArrayList<Node>();
