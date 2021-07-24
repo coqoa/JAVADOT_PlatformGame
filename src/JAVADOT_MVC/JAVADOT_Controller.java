@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,7 +21,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class JAVADOT_Controller {
 	public Stage stage;
@@ -37,7 +42,7 @@ public class JAVADOT_Controller {
 	int jumpNumber;
 	public Label jumpCount = new Label();
 	public Button jumpCountButton = new Button();
-
+	
 	public void jumpData() {
 		
 		jumpNumber = 1; //시작시 가지는 점프횟수 기본값
@@ -59,7 +64,7 @@ public class JAVADOT_Controller {
     
 	public void jumpPlayer() {
 		if (canJump) {
-			playerVelocity = playerVelocity.add(0, -35);
+			playerVelocity = playerVelocity.add(0, -19);
 			canJump = false;
 		}
 	}
@@ -81,61 +86,122 @@ public class JAVADOT_Controller {
 		return mainContainer;
 	}
 	
-		public boolean isPressed(KeyCode key) {
+	public boolean isPressed(KeyCode key) {
 		//	key가 존재하면 key값을 반환하고 존재하지않으면 디폴트값인 false를 반환		
         return keys.getOrDefault(key, false);
 	}
 		
-		
 	// AnimationTimer로 매번 업데이트
-	public void sceneUpdate() { 
+	public void updatePlayer() { 
+//		
+//		
+//		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6를 입력		
+//		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
+//			movePlayerX(-4);
+//		}
+//        //	RIGHT키를 누르고 player객체의 오른쪽 경계가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 6를 입력
+//		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
+//			movePlayerX(4);	
+//		}
+//		if (isPressed(KeyCode.ESCAPE)) {
+//			if(player.getTranslateX() > 0) {
+//			player.setTranslateX(player.getTranslateX()-5000);
+//			stage.close();
+//			Platform.runLater( () -> {
+//				try {
+//					new JAVADOT_Main().start(new Stage());
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			});
+////				mainClass.start(stage);
+//			}
+//		}
 		
-		
-		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6를 입력		
-		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
-			movePlayerX(-6);
-		}
-        //	RIGHT키를 누르고 player객체의 오른쪽 경계가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 6를 입력
-		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
-			movePlayerX(6);	
-		}
-		if (isPressed(KeyCode.ESCAPE)) {
-			if(player.getTranslateX() > 0) {
-			try {
-				player.setTranslateX(player.getTranslateX()-5000);
-				mainClass.start(stage);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			}
-		}
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 담당)
 		if (playerVelocity.getY() < 10) { 
-			playerVelocity = playerVelocity.add(0, 2);	
+			playerVelocity = playerVelocity.add(0, 0.3);	
 		}
         //	movePlayerY(int value)에 playerVelocity값 할당
 		movePlayerY((int)playerVelocity.getY()); 
 		
         //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
 		//	blockContainer의 X값 이동(-(player의X값-640만))
-		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
-			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
-		}
+//		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
+//			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
+//		}
 		
+//		for (Node reset : level.resets) { 
+//			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
+//				player.setTranslateX(5000); //반복적인 reset을 피하기위해 player값의 위치이동
+//				// 7번 박스와 충돌하면 재시작
+////				mainContainer.getChildren().remove(level.blockContainer); 
+////				mainContainer.getChildren().clear(); 
+//				stage.close();
+//				try {
+//					mainClass.start(stage);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+		
+//		for (Node door : level.doors) { // 
+//			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
+////				if(isPressed(KeyCode.UP)) {
+//					if (player.getTranslateY() > 0 && player.getTranslateY() < 720) { //1렙 낙하구
+//						level.blockContainer.setLayoutX(0);
+//						level.blockContainer.setLayoutY(-810);
+//						player.setTranslateX(0); //기존의 player객체를 없애는 메소드
+//						player.setTranslateY(1350); //기존의 player객체를 없애는 메소드
+//						jumpData();
+//					}else if (player.getTranslateY() > 750 && player.getTranslateY() < 1500) { //1렙 낙하구
+//						level.blockContainer.setLayoutX(0);
+//						level.blockContainer.setLayoutY(-1620);
+//						player.setTranslateX(0); //기존의 player객체를 없애는 메소드
+//						player.setTranslateY(1920); //기존의 player객체를 없애는 메소드
+//						jumpData();
+////					}
+//				}
+//			}	
+//		}
+	}
+	
+	public void updateCollision() { 
 		for (Node reset : level.resets) { 
 			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
-				player.setTranslateX(5000); //반복적인 reset을 피하기위해 player값의 위치이동
-				// 7번 박스와 충돌하면 재시작
-//				mainContainer.getChildren().remove(level.blockContainer); 
-//				mainContainer.getChildren().clear(); 
-				stage.close();
-				try {
-					mainClass.start(stage);
-				} catch (IOException e) {
-					e.printStackTrace();
+				
+				if(player.getTranslateX() > 0) {
+					player.setTranslateX(player.getTranslateX()-5000);
+					level.blockContainer.getChildren().clear();
+					mainContainer.getChildren().clear();
+					stage.close();
+					System.out.println("DIEChange!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					Platform.runLater( () -> {
+						try {
+							new JAVADOT_Main().start(new Stage());
+						} catch (IOException e) {
+							System.out.println("1");
+							e.printStackTrace();
+						}
+					});
 				}
+				
+				
+//				player.setTranslateX(5000); //반복적인 reset을 피하기위해 player값의 위치이동
+//				// 7번 박스와 충돌하면 재시작
+////				mainContainer.getChildren().remove(level.blockContainer); 
+////				mainContainer.getChildren().clear(); 
+//				stage.close();
+//				try {
+//					mainClass.start(stage);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
 			}
 		}
+		
+		
 		
 		for (Node door : level.doors) { // 
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
@@ -156,7 +222,51 @@ public class JAVADOT_Controller {
 				}
 			}	
 		}
+	}
+	
+	public void updateKeyPress() { 
+		
+		
+		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6를 입력		
+		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
+			movePlayerX(-3);
 		}
+        //	RIGHT키를 누르고 player객체의 오른쪽 경계가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 6를 입력
+		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
+			movePlayerX(3);	
+		}
+		if (isPressed(KeyCode.ESCAPE)) {
+			if(player.getTranslateX() > 0) {
+			player.setTranslateX(player.getTranslateX()-5000);
+//			level.blockContainer.getChildren().removeAll();
+//			mainContainer.getChildren().removeAll();
+			level.blockContainer = null;
+			mainContainer = null;
+			System.gc();
+			stage.close();
+			
+			System.out.println("BTNChange!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			Platform.runLater( () -> {
+				try {
+					new JAVADOT_Main().start(new Stage());
+				} catch (IOException e) {
+					System.out.println("2");
+					e.printStackTrace();
+				}
+			});
+			}
+		}
+	}
+	
+	public void updateScene() { 
+
+        //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
+		//	blockContainer의 X값 이동(-(player의X값-640만))
+		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
+			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
+		}
+	}
+	//
 	public void movePlayerX(int value) {
     	// LEFT=false, RIGHT=true
 		boolean movingRight = value > 0; 
@@ -241,6 +351,7 @@ public class JAVADOT_Controller {
 	public void gameStartButton(ActionEvent event) throws IOException {
 		
 		mainPage();
+		
 		// if (블럭과 플레이어가 겹쳤고 UP버튼을 눌렀을때)
 		// if (changeMap == mainPage(ObjectData1.LEVEL1)) {
 		// 	changeMap = mainPage(ObjectData1.LEVEL2) 
@@ -258,21 +369,97 @@ public class JAVADOT_Controller {
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
 		
-		Thread updateThread = new Thread() {
+		//player위치관련 스레드
+		Thread updatePlayerThread = new Thread() {
 			@Override
 			public void run() {
+				 try {
+                     Thread.sleep(100);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
 				AnimationTimer timer = new AnimationTimer() {
 					@Override
 					public void handle(long now) {
-						sceneUpdate();
+						updatePlayer();
+						System.out.println("UpdatePlayer");
 					}
 				};
 				timer.start();
 				}
 		};
-		Platform.runLater(updateThread);
-		updateThread.setDaemon(true);
-		updateThread.start();
+		Platform.runLater(updatePlayerThread);
+		updatePlayerThread.setDaemon(true);
+		updatePlayerThread.start();
+		
+		//화면 이동구현 관련 스레드
+		Thread updateSceneThread = new Thread() {
+			@Override
+			public void run() {
+				 try {
+                     Thread.sleep(100);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+				AnimationTimer timer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						updateScene();
+						System.out.println("UpdateScene");
+					}
+				};
+				timer.start();
+				}
+		};
+		Platform.runLater(updateSceneThread);
+		updateSceneThread.setDaemon(true);
+		updateSceneThread.start();
+		
+		//키입력 관련 스레드
+		Thread updateKeyThread = new Thread() {
+			@Override
+			public void run() {
+				 try {
+                     Thread.sleep(100);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+				AnimationTimer timer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						updateKeyPress();
+						System.out.println("UpdateKeyPress");
+					}
+				};
+				timer.start();
+				}
+		};
+		Platform.runLater(updateKeyThread);
+		updateKeyThread.setDaemon(true);
+		updateKeyThread.start();
+		
+		//충돌관련 스레드
+		Thread updateCollisionThread = new Thread() {
+			@Override
+			public void run() {
+				 try {
+                     Thread.sleep(100);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+				AnimationTimer timer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						updateCollision();
+						System.out.println("UpdateCollision");
+					}
+				};
+				timer.start();
+				}
+		};
+		Platform.runLater(updateCollisionThread);
+		updateCollisionThread.setDaemon(true);
+		updateCollisionThread.start();
 	}
 }
 
