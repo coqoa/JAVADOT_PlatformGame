@@ -11,13 +11,12 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class JAVADOT_Controller {
@@ -35,7 +34,7 @@ public class JAVADOT_Controller {
 	
 	///점프관련 변수, 메서드
 	int jumpNumber;
-	public Label jumpCount = new Label();
+	public Text jumpCount = new Text();
 	public Button jumpCountButton = new Button();
 
 	public void jumpData() {
@@ -44,8 +43,10 @@ public class JAVADOT_Controller {
 		jumpCount.setText(""+jumpNumber); //화면에 출력
 		jumpCount.setTranslateX(630); //출력위치
 		jumpCount.setTranslateY(150);
-		jumpCount.setFont(Font.font("verdana", FontWeight.BOLD, 20));
-		jumpCount.setTextFill(Color.LIGHTGOLDENRODYELLOW);
+		jumpCount.setFont(Font.font("Brush Script MT", 50));
+		jumpCount.setFill(Color.WHITE);
+		jumpCount.setStroke(Color.DARKBLUE);
+		jumpCount.setStrokeWidth(2);
 		jumpCountButton.setTranslateX(10);
 		jumpCountButton.setOpacity(0);
 		jumpCountButton.setOnKeyPressed(e->{
@@ -67,7 +68,7 @@ public class JAVADOT_Controller {
 	
 	public Node mainPage() {
 		// 맨 위에 위치해야 player객체가 door보다 앞에 표시됨, 매개변수를 매개변수로 넣음
-		level.levelData(ObjectData1.LEVEL1); 
+		level.levelData(); 
     	
 		//게임프레임, 배경화면 색깔
 		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
@@ -76,7 +77,8 @@ public class JAVADOT_Controller {
 		jumpData(); 
 			
 		// createObject (blockContainer)
-		player = level.createObject(0, 600, 20, 20, Color.DODGERBLUE); 
+		player = level.createObject(0, 600, 20, 20, Color.DODGERBLUE);
+		
 		 
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
 		return mainContainer;
@@ -92,22 +94,28 @@ public class JAVADOT_Controller {
 	public void sceneUpdate() { 
 		
 		
-		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6를 입력		
+		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -3를 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
 			movePlayerX(-3);
 		}
-        //	RIGHT키를 누르고 player객체의 오른쪽 경계가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 6를 입력
+        //	RIGHT키를 누르고 player객체의 오른쪽 경계가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 3를 입력
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
 			movePlayerX(3);	
 		}
 		if (isPressed(KeyCode.ESCAPE)) {
-			if(player.getTranslateX() > 0) {
-			try {
-				player.setTranslateX(player.getTranslateX()-5000);
-				mainClass.start(stage);
-			} catch (IOException e) {
+			if(player.getTranslateX() > -1) {
+				//재실행 코드
+				try {
+					player.setTranslateX(-1000000);
+					try {
+					mainClass.stop();
+					} catch (Exception e) {
+					e.printStackTrace();
+					}
+					mainClass.start(stage);
+				} catch (IOException e) {
 				e.printStackTrace();
-			}
+				}
 			}
 		}
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 담당)
@@ -123,14 +131,17 @@ public class JAVADOT_Controller {
 			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
 		}
 		
-		for (Node reset : level.resets) { 
+		for (Node reset : level.resets) { // 7
 			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
-				player.setTranslateX(5000); //반복적인 reset을 피하기위해 player값의 위치이동
-				// 7번 박스와 충돌하면 재시작
-//				mainContainer.getChildren().remove(level.blockContainer); 
-//				mainContainer.getChildren().clear(); 
-				stage.close();
+				//재실행 코드
 				try {
+					//reset블럭과 충돌시 player의 Y값을 변경시켜서 반복수행을 막는다
+					player.setTranslateY(-1000000);
+					try {
+						mainClass.stop();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					mainClass.start(stage);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -138,23 +149,29 @@ public class JAVADOT_Controller {
 			}
 		}
 		
-		for (Node door : level.doors) { // 
+		for (Node door : level.doors) { // 3 door 충돌체크 메서드
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
-//				if(isPressed(KeyCode.UP)) {
-					if (player.getTranslateY() > 0 && player.getTranslateY() < 720) { //1렙 낙하구
-						level.blockContainer.setLayoutX(0);
-						level.blockContainer.setLayoutY(-810);
-						player.setTranslateX(0); //기존의 player객체를 없애는 메소드
-						player.setTranslateY(1350); //기존의 player객체를 없애는 메소드
+				
+					if (player.getTranslateX() > -10 && player.getTranslateX() < 3850) { 
+						level.blockContainer.setLayoutX(4700); //카메라 위치 지정
+						level.blockContainer.setLayoutY(0);
+						player.setTranslateX(4700); // player 1번맵에서 2번맵으로 이동
+						player.setTranslateY(600); 
+						jumpData(); //점프데이터 초기화 (횟수1로)
+						
+					}else if (player.getTranslateX() > 4000 && player.getTranslateX() < 8470) { // // 1번맵 door터치시 플레이어 위치 확인 
+						level.blockContainer.setLayoutX(9300); //카메라 위치 지정
+						level.blockContainer.setLayoutY(0);
+						player.setTranslateX(9300); // player ?번맵에서 ?번맵으로 이동
+						player.setTranslateY(600); 
 						jumpData();
-					}else if (player.getTranslateY() > 750 && player.getTranslateY() < 1500) { //1렙 낙하구
-						level.blockContainer.setLayoutX(0);
-						level.blockContainer.setLayoutY(-1620);
-						player.setTranslateX(0); //기존의 player객체를 없애는 메소드
-						player.setTranslateY(1920); //기존의 player객체를 없애는 메소드
-						jumpData();
-//					}
-				}
+//					}else if (player.getTranslateX() > __ && player.getTranslateX() < __) { // // 1번맵 door터치시 플레이어 위치 확인 
+//						level.blockContainer.setLayoutX(); //카메라 위치 지정
+//						level.blockContainer.setLayoutY();
+//						player.setTranslateX(); // player ?번맵에서 ?번맵으로 이동
+//						player.setTranslateY(); 
+//						jumpData();
+					}
 			}	
 		}
 		}
@@ -163,13 +180,14 @@ public class JAVADOT_Controller {
 		boolean movingRight = value > 0; 
 		
 			for (int i = 0; i < Math.abs(value); i++) {
-            	// LevelData클래스의 blocks ArrayList에 넣어둔 block를 하나씩 실행
-				for (Node block : level.blocks) { 
+
+				// LevelData클래스의 blocks ArrayList에 넣어둔 block를 하나씩 실행
+				for (Node block : level.blocks) { // 1
 					if (player.getBoundsInParent().intersects(block.getBoundsInParent())) {
 						if (movingRight) {	//RIGHT
                         	// RIGHT입력시 player의 오른쪽경계와 block의 왼쪽경계가 맞닿았을때
 							if (player.getTranslateX() + 20 == block.getTranslateX()) { 
-                            	// player의 y값+10이 block의 y값보다 작다면 y값을 -10해준다
+                            	// player의 y값+10이 block의 y값보다 작다면 y값을 -10해준다 (한칸짜리는 뛰어넘게 해줌)
 								if(player.getTranslateY()+10 < block.getTranslateY()) { 
 									player.setTranslateY(player.getTranslateY()-10);
 								}
@@ -178,7 +196,7 @@ public class JAVADOT_Controller {
 						} else  {	//LEFT
                         	// LEFT입력시 player의 왼쪽경계와 block의 오른쪽 경계가 맞닿았을때
 							if (player.getTranslateX() == block.getTranslateX() + 10) { 
-								// player의 y값+10이 block의 y값보다 작다면 y값을 -10해준다
+								// player의 y값+10이 block의 y값보다 작다면 y값을 -10해준다 (한칸짜리는 뛰어넘게 해줌)
                                 if(player.getTranslateY()+10 < block.getTranslateY()) {
 									player.setTranslateY(player.getTranslateY()-10);
 								}
@@ -187,17 +205,61 @@ public class JAVADOT_Controller {
 						}
 					}
 				}
+				
+				for (Node slipBlock : level.slipBlocks) { 
+					if (player.getBoundsInParent().intersects(slipBlock.getBoundsInParent())) {
+						if (movingRight) {	//RIGHT
+                        	// RIGHT입력시 player의 오른쪽경계와 slipBlock의 왼쪽경계가 맞닿았을때
+							if (player.getTranslateX() + 20 == slipBlock.getTranslateX()) { 
+                            	// player의 y값+10이 slipBlock의 y값보다 작다면 y값을 -10해준다 (한칸짜리는 뛰어넘게 해줌)
+								if(player.getTranslateY()+10 < slipBlock.getTranslateY()) { 
+									player.setTranslateY(player.getTranslateY()-10);
+									player.setTranslateX(player.getTranslateX()-1); // 벽에 안달라붙고 미끄러지게 하는코드
+								}
+								return;
+							}
+						} else  {	//LEFT
+                        	// LEFT입력시 player의 왼쪽경계와 block의 오른쪽 경계가 맞닿았을때
+							if (player.getTranslateX() == slipBlock.getTranslateX() + 10) { 
+								// player의 y값+10이 block의 y값보다 작다면 y값을 -10해준다 (한칸짜리는 뛰어넘게 해줌)
+                                if(player.getTranslateY()+10 < slipBlock.getTranslateY()) {
+									player.setTranslateY(player.getTranslateY()-10);
+									player.setTranslateX(player.getTranslateX()+1);// 벽에 안달라붙고 미끄러지게 하는코드
+								}
+								return;
+							}
+						}
+					}
+				}
+				for (Node layout : level.layouts) { 
+					if (player.getBoundsInParent().intersects(layout.getBoundsInParent())) {
+						if (movingRight) {
+                        	// RIGHT입력시 player의 오른쪽경계와 layout의 왼쪽경계가 맞닿았을때 멈추게함
+							if (player.getTranslateX() + 20 == layout.getTranslateX()) { 
+								player.setTranslateX(player.getTranslateX()-1);
+								return;
+							}
+						} else  {
+                        	// LEFT입력시 player의 왼쪽경계와 layout의 오른쪽 경계가 맞닿았을때 멈추게 함
+							if (player.getTranslateX() == layout.getTranslateX() + 10) { 
+								player.setTranslateX(player.getTranslateX()+1);
+								return;
+							}
+						}
+					}
+				}
+				
                 // RIGHT버튼을 누르면 player객체의 x위치를 +1만큼씩, LEFT버튼을 누르면 x위치를 -1만큼씩이
 				player.setTranslateX(player.getTranslateX()+(movingRight ? 1 : -1)); 
 			}
             
             // energy를 먹으면 jumpNumber를 1 증가시키고 jumpCount에 출력한
 			// energy는 충돌시 Y값을 +500만큼 증가시켜서 화면에서 제외시킨다 
-			for (Node energy : level.energys) { // player와 energy 충돌구현
+			for (Node energy : level.energys) { // player와 energy 충돌구현 (충돌시 jumpNumber값 +1, 점프횟수 시각화, energy객체는 이동시켜서 화면에 안보이게함
 				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
 					jumpNumber = jumpNumber+1;
 					jumpCount.setText(""+jumpNumber);
-					energy.setTranslateY(energy.getTranslateX()+4000);
+					energy.setTranslateY(energy.getTranslateY()+4000); 
 				}
 			}
 		}
@@ -206,6 +268,7 @@ public class JAVADOT_Controller {
 		boolean movingDown = value > 0;
 		
 				for (int i = 0; i < Math.abs(value); i++) {
+					
 					for (Node block : level.blocks) {
 						//player와 block비교
                         if (player.getBoundsInParent().intersects(block.getBoundsInParent())) { 
@@ -229,6 +292,39 @@ public class JAVADOT_Controller {
 							}
 						}
 					}
+					
+					for (Node slipBlock : level.slipBlocks) {
+						//player와 block비교
+                        if (player.getBoundsInParent().intersects(slipBlock.getBoundsInParent())) { 
+							if (movingDown) {
+								// player의 바닥변과 block의 윗면이 충돌하면
+                                if (player.getTranslateY() + 20 == slipBlock.getTranslateY()) { 
+									// player객체의 y값을 -1해주고 점프버튼이 작동하도록 해줌
+                                    player.setTranslateY(player.getTranslateY() - 1);		
+									canJump=true; 
+									return;
+								}
+							} else {
+                            	// 점프시 윗벽이 막혀있으면 더 안올라가짐
+								if (player.getTranslateY() == slipBlock.getTranslateY() + 10) { 
+									//윗벽에 막혔을 시 Y값을 +1해준다(붙어있으면 안움직임) 
+                                    player.setTranslateY(player.getTranslateY() + 1); 
+									// 윗벽에 붙었을때 점프버튼 작동x
+                                    canJump = false; 
+									return;
+								}
+							}
+						}
+					}
+					
+					for (Node energy : level.energys) { // player와 energy 충돌구현 (충돌시 jumpNumber값 +1, 점프횟수 시각화, energy객체는 이동시켜서 화면에 안보이게함
+						if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
+							jumpNumber = jumpNumber+1;
+							jumpCount.setText(""+jumpNumber);
+							energy.setTranslateY(energy.getTranslateY()+4000); 
+						}
+					}
+					
                     //player객체의 위치 = player객체의 이동좌표 + movingDown이 참이라면 +1 거짓이면 -1
 					player.setTranslateY(player.getTranslateY()+(movingDown ? 0.5 : -0.5)); 
 				}
@@ -242,19 +338,13 @@ public class JAVADOT_Controller {
 	public void gameStartButton(ActionEvent event) throws IOException {
 		
 		mainPage();
-		// if (블럭과 플레이어가 겹쳤고 UP버튼을 눌렀을때)
-		// if (changeMap == mainPage(ObjectData1.LEVEL1)) {
-		// 	changeMap = mainPage(ObjectData1.LEVEL2) 
-        // }else if((changeMap == mainPage(ObjectData1.LEVEL2)){
-		// 	changeMap = mainPage(ObjectData1.LEVEL3)
-		// } 이런식으로 스테이지넘기기? 이게구현되면 죽는것도구현할 수 있음
 		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-		scene = new Scene(mainContainer);
+		scene = new Scene(mainContainer, 1280, 720);
 		stage.setTitle("JAVADOT");
+		stage.setResizable(false);
 		stage.setScene(scene);
 		stage.show();
-		
 		
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
@@ -284,6 +374,8 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 	public ArrayList<Node> energys = new ArrayList<Node>();
 	public ArrayList<Node> doors = new ArrayList<Node>();
 	public ArrayList<Node> resets = new ArrayList<Node>();
+	public ArrayList<Node> layouts = new ArrayList<Node>();
+	public ArrayList<Node> slipBlocks = new ArrayList<Node>();
 	public ArrayList<Node> bgObject = new ArrayList<Node>(); 
 	
 	public Node createObject(int x, int y, int w, int h, Color color) {
@@ -295,14 +387,11 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 		blockContainer.getChildren().addAll(object);
 		return object;
 	}
-	public Node levelData(String[]levelNumber) {
+	public Node levelData() {
+		levelWidth = ObjectData1.LEVEL1[0].length() * 10; 
 		
-//		level.levelData(ObjectData1.LEVEL1); 이렇게 사용가능
-		
-		levelWidth = levelNumber[0].length() * 10; 
-		
-		for (int i = 0; i < levelNumber.length; i++) {
-			String line = levelNumber[i];
+		for (int i = 0; i < ObjectData1.LEVEL1.length; i++) {
+			String line = ObjectData1.LEVEL1[i];
 			for (int j = 0; j < line.length(); j++) {
 				switch (line.charAt(j)) {
 					case '0':
@@ -312,7 +401,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 						blocks.add(block);
 						break;
 					case '2':
-						Node energy = createObject(j*10, i*10, 5, 5, Color.ORANGE);
+						Node energy = createObject(j*10, i*10, 5, 5, Color.GOLD);
 						energys.add(energy);
 						break;
 					case '3':
@@ -320,14 +409,18 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 						doors.add(door);
 						break;
 					case '4':
+						Node slipBlock = createObject(j*10, i*10, 10, 10, Color.NAVY);
+						slipBlocks.add(slipBlock);
+						break;
+					case 'R':
 						Node sunR = createObject(j*10, i*10, 10, 10, Color.TOMATO);
 						bgObject.add(sunR);
 						break;
-					case '5':
+					case 'Y':
 						Node sunY = createObject(j*10, i*10, 10, 10, Color.YELLOW);
 						bgObject.add(sunY);
 						break;
-					case '6':
+					case 'W':
 						Node cloud = createObject(j*10, i*10, 10, 10, Color.WHITE);
 						bgObject.add(cloud);
 						break;
@@ -335,9 +428,14 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 						Node reset = createObject(j*10, i*10, 10, 10, Color.WHITE);
 						resets.add(reset);
 						break;
+					case 'L':
+						Node layout = createObject(j*10, i*10, 10, 10, Color.TRANSPARENT);
+						layouts.add(layout);
+						break;
 				}
 			}
 		}
 		return blockContainer;
 	}
 }
+
