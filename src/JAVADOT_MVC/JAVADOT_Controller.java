@@ -96,12 +96,14 @@ public class JAVADOT_Controller {
 		
 		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -3를 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
-			movePlayerX(-3);
+			movePlayerX(-6);
 		}
         //	RIGHT키를 누르고 player객체의 오른쪽 경계가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 3를 입력
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
-			movePlayerX(3);	
+			movePlayerX(6);	
 		}
+		
+		
 		if (isPressed(KeyCode.ESCAPE)) {
 			if(player.getTranslateX() > -1) {
 				//재실행 코드
@@ -120,16 +122,16 @@ public class JAVADOT_Controller {
 		}
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 담당)
 		if (playerVelocity.getY() < 10) { 
-			playerVelocity = playerVelocity.add(0, 1);	
+			playerVelocity = playerVelocity.add(0, 2);	
 		}
         //	movePlayerY(int value)에 playerVelocity값 할당
 		movePlayerY((int)playerVelocity.getY()); 
 		
-        //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
-		//	blockContainer의 X값 이동(-(player의X값-640만))
-		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
-			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
-		}
+//        //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
+//		//	blockContainer의 X값 이동(-(player의X값-640만))
+//		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
+//			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
+//		}
 		
 		for (Node reset : level.resets) { // 7
 			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
@@ -137,11 +139,14 @@ public class JAVADOT_Controller {
 				try {
 					//reset블럭과 충돌시 player의 Y값을 변경시켜서 반복수행을 막는다
 					player.setTranslateY(-1000000);
-					try {
-						mainClass.stop();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+//					try {
+//						mainClass.stop();
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+					level.blockContainer.getChildren().removeAll();
+					mainContainer.getChildren().removeAll();
+					stage.close();
 					mainClass.start(stage);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -175,6 +180,15 @@ public class JAVADOT_Controller {
 			}	
 		}
 		}
+
+	public void moveCamera() {
+		 //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
+		//	blockContainer의 X값 이동(-(player의X값-640만))
+		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
+			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
+		}
+	}
+
 	public void movePlayerX(int value) {
     	// LEFT=false, RIGHT=true
 		boolean movingRight = value > 0; 
@@ -214,7 +228,8 @@ public class JAVADOT_Controller {
                             	// player의 y값+10이 slipBlock의 y값보다 작다면 y값을 -10해준다 (한칸짜리는 뛰어넘게 해줌)
 								if(player.getTranslateY()+10 < slipBlock.getTranslateY()) { 
 									player.setTranslateY(player.getTranslateY()-10);
-									player.setTranslateX(player.getTranslateX()-1); // 벽에 안달라붙고 미끄러지게 하는코드
+								}else {
+								player.setTranslateX(player.getTranslateX()-1);// 벽에 안달라붙고 미끄러지게 하는코드
 								}
 								return;
 							}
@@ -224,9 +239,10 @@ public class JAVADOT_Controller {
 								// player의 y값+10이 block의 y값보다 작다면 y값을 -10해준다 (한칸짜리는 뛰어넘게 해줌)
                                 if(player.getTranslateY()+10 < slipBlock.getTranslateY()) {
 									player.setTranslateY(player.getTranslateY()-10);
-									player.setTranslateX(player.getTranslateX()+1);// 벽에 안달라붙고 미끄러지게 하는코드
+								}else {
+                                player.setTranslateX(player.getTranslateX()+1);// 벽에 안달라붙고 미끄러지게 하는코드
 								}
-								return;
+                                return;
 							}
 						}
 					}
@@ -326,7 +342,7 @@ public class JAVADOT_Controller {
 					}
 					
                     //player객체의 위치 = player객체의 이동좌표 + movingDown이 참이라면 +1 거짓이면 -1
-					player.setTranslateY(player.getTranslateY()+(movingDown ? 0.5 : -0.5)); 
+					player.setTranslateY(player.getTranslateY()+(movingDown ? 1 : -1)); 
 				}
 //				for (Node door : doors) { x충돌구현에 해놔서 주석처리해놓음
 //					if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
@@ -349,9 +365,9 @@ public class JAVADOT_Controller {
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
 		
-		Thread updateThread = new Thread() {
-			@Override
-			public void run() {
+//		Thread updateThread = new Thread() {
+//			@Override
+//			public void run() {
 				AnimationTimer timer = new AnimationTimer() {
 					@Override
 					public void handle(long now) {
@@ -359,11 +375,28 @@ public class JAVADOT_Controller {
 					}
 				};
 				timer.start();
+//				}
+//		};
+//		Platform.runLater(updateThread);
+//		updateThread.setDaemon(true);
+//		updateThread.start();
+//		
+		Thread cameraThread = new Thread() {
+			@Override
+			public void run() {
+				AnimationTimer timer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						moveCamera();
+						System.out.println("CAMERA");
+					}
+				};
+				timer.start();
 				}
 		};
-		Platform.runLater(updateThread);
-		updateThread.setDaemon(true);
-		updateThread.start();
+		Platform.runLater(cameraThread);
+		cameraThread.setDaemon(true);
+		cameraThread.start();
 	}
 }
 
