@@ -79,7 +79,7 @@ public class JAVADOT_Controller {
 		// createObject (blockContainer)
 		player = level.createObject(0, 600, 20, 20, Color.DODGERBLUE);
 		
-		 
+		
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
 		return mainContainer;
 	}
@@ -107,17 +107,24 @@ public class JAVADOT_Controller {
 		if (isPressed(KeyCode.ESCAPE)) {
 			if(player.getTranslateX() > -1) {
 				//재실행 코드
-				try {
-					player.setTranslateX(-1000000);
-					try {
-					mainClass.stop();
-					} catch (Exception e) {
-					e.printStackTrace();
-					}
-					mainClass.start(stage);
-				} catch (IOException e) {
-				e.printStackTrace();
-				}
+	try {
+		player.setTranslateX(-1000000);
+		try {
+			mainClass.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mainClass.start(stage);
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	scene = null;
+	stage = null;
+	mainContainer = null;
+	level.blockContainer = null;
+	System.out.println(scene);
+	System.out.println(stage);
+	System.out.println(mainContainer);
 			}
 		}
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 담당)
@@ -357,6 +364,8 @@ public class JAVADOT_Controller {
 		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(mainContainer, 1280, 720);
+	System.out.println(scene);
+	System.out.println(stage);
 		stage.setTitle("JAVADOT");
 		stage.setResizable(false);
 		stage.setScene(scene);
@@ -388,7 +397,7 @@ public class JAVADOT_Controller {
 					@Override
 					public void handle(long now) {
 						moveCamera();
-						System.out.println("CAMERA");
+//						System.out.println("CAMERA");
 					}
 				};
 				timer.start();
