@@ -107,17 +107,14 @@ public class JAVADOT_Controller {
 		if (isPressed(KeyCode.ESCAPE)) {
 			if(player.getTranslateX() > -1) {
 				//재실행 코드
-	try {
 		player.setTranslateX(-1000000);
+		
 		try {
-			mainClass.stop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		mainClass.start(stage);
-	} catch (IOException e) {
+		} catch (IOException e) {
 		e.printStackTrace();
-	}
+		}
+				
 	scene = null;
 	stage = null;
 	mainContainer = null;
