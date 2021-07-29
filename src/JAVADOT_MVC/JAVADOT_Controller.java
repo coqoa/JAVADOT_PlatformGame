@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,6 +21,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class JAVADOT_Controller {
 	public Stage stage;
@@ -108,17 +112,17 @@ public class JAVADOT_Controller {
 			if(player.getTranslateX() > -1) {
 				//재실행 코드
 		player.setTranslateX(-1000000);
-		
+		Thread.interrupted();
 		try {
 		mainClass.start(stage);
 		} catch (IOException e) {
 		e.printStackTrace();
 		}
 				
-	scene = null;
-	stage = null;
-	mainContainer = null;
-	level.blockContainer = null;
+//	scene = null;
+//	stage = null;
+//	mainContainer = null;
+//	level.blockContainer = null;
 	System.out.println(scene);
 	System.out.println(stage);
 	System.out.println(mainContainer);
@@ -381,28 +385,55 @@ public class JAVADOT_Controller {
 					}
 				};
 				timer.start();
+
+//				EventHandler<ActionEvent> scenEventHandler = new EventHandler<ActionEvent>() {
+//					public void handle(ActionEvent e) {
+//						sceneUpdate();
+//						}
+//					};
+//				Timeline sceneAnimation = new Timeline(new KeyFrame(Duration.millis(15), scenEventHandler));
+//				sceneAnimation.setCycleCount(Timeline.INDEFINITE);
+//				sceneAnimation.play();
+				
 //				}
 //		};
 //		Platform.runLater(updateThread);
 //		updateThread.setDaemon(true);
 //		updateThread.start();
-//		
 		Thread cameraThread = new Thread() {
-			@Override
-			public void run() {
-				AnimationTimer timer = new AnimationTimer() {
-					@Override
-					public void handle(long now) {
+				@Override
+				public void run() {
+				EventHandler<ActionEvent> sceneMove = new EventHandler<ActionEvent>() {
+					public void handle(ActionEvent e) {
 						moveCamera();
-//						System.out.println("CAMERA");
-					}
-				};
-				timer.start();
+						}
+					};
+				Timeline sceneAnimation = new Timeline(new KeyFrame(Duration.millis(1), sceneMove));
+				sceneAnimation.setCycleCount(Timeline.INDEFINITE);
+				sceneAnimation.play();
 				}
 		};
 		Platform.runLater(cameraThread);
 		cameraThread.setDaemon(true);
 		cameraThread.start();
+				
+				
+//		Thread cameraThread = new Thread() {
+//			@Override
+//			public void run() {
+//				AnimationTimer timer = new AnimationTimer() {
+//					@Override
+//					public void handle(long now) {
+//						moveCamera();
+////						System.out.println("CAMERA");
+//					}
+//				};
+//				timer.start();
+//				}
+//		};
+//		Platform.runLater(cameraThread);
+//		cameraThread.setDaemon(true);
+//		cameraThread.start();
 	}
 }
 
