@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.xml.soap.SOAPPart;
+
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,6 +13,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -71,6 +74,7 @@ public class JAVADOT_Controller {
 	}
 	
 	public Node mainPage() {
+		
 		// 맨 위에 위치해야 player객체가 door보다 앞에 표시됨, 매개변수를 매개변수로 넣음
 		level.levelData(); 
     	
@@ -83,11 +87,11 @@ public class JAVADOT_Controller {
 		// createObject (blockContainer)
 		player = level.createObject(0, 600, 20, 20, Color.DODGERBLUE);
 		
-		
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
 		return mainContainer;
 	}
 	
+
 		public boolean isPressed(KeyCode key) {
 		//	key가 존재하면 key값을 반환하고 존재하지않으면 디폴트값인 false를 반환		
         return keys.getOrDefault(key, false);
@@ -112,12 +116,13 @@ public class JAVADOT_Controller {
 			if(player.getTranslateX() > -1) {
 				//재실행 코드
 		player.setTranslateX(-1000000);
-		Thread.interrupted();
-		try {
-		mainClass.start(stage);
-		} catch (IOException e) {
-		e.printStackTrace();
-		}
+		
+		
+//		try {
+//		mainClass.start(stage);
+//		} catch (IOException e) {
+//		e.printStackTrace();
+//		}
 				
 //	scene = null;
 //	stage = null;
@@ -362,15 +367,29 @@ public class JAVADOT_Controller {
 	public void gameStartButton(ActionEvent event) throws IOException {
 		
 		mainPage();
+
+//		mainPage().setCache(true);
+		mainPage().setCacheHint(CacheHint.SPEED);
+
+//		mainContainer.setCache(true);
+//		mainContainer.setCacheShape(true);
+//		mainContainer.setCacheHint(CacheHint.SPEED);
+
+//		level.blockContainer.setCache(true); 
+//		level.blockContainer.setCacheShape(true);
+//		level.blockContainer.setCacheHint(CacheHint.SPEED);
+
 		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(mainContainer, 1280, 720);
 	System.out.println(scene);
 	System.out.println(stage);
+		
 		stage.setTitle("JAVADOT");
 		stage.setResizable(false);
 		stage.setScene(scene);
 		stage.show();
+		
 		
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
@@ -416,7 +435,6 @@ public class JAVADOT_Controller {
 		Platform.runLater(cameraThread);
 		cameraThread.setDaemon(true);
 		cameraThread.start();
-				
 				
 //		Thread cameraThread = new Thread() {
 //			@Override
