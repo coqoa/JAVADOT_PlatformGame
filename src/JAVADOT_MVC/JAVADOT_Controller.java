@@ -78,9 +78,9 @@ public class JAVADOT_Controller {
 	public boolean canJump = true;
 	public void jumpPlayer() {
 		if (canJump) {
-			playerVelocity = playerVelocity.add(0, -40);
+			playerVelocity = playerVelocity.add(0, -34);
 			canJump = false;
-		}
+ 		}
 	}
 	
 	public Node mainPage() {
@@ -94,7 +94,7 @@ public class JAVADOT_Controller {
 		jumpData(); 
 			
 		// createObject (blockContainer)
-		player = level.createObject(630, 550, 20, 20, Color.DODGERBLUE);
+		player = level.createObject(630, 550, 20, 20, Color.MEDIUMVIOLETRED);
 		
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
 		return mainContainer;
@@ -111,11 +111,11 @@ public class JAVADOT_Controller {
 	public void sceneUpdate() { 
 		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6을 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
-			movePlayerX(-9);
+			movePlayerX(-10);
 		}
         //	RIGHT키를 누르고 player객체의 오른쪽 경가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 6을 입력
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
-			movePlayerX(9);	
+			movePlayerX(10);	
 		}
 		
 		// esc버튼으로 재시작
@@ -131,8 +131,8 @@ public class JAVADOT_Controller {
 		}
 		
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 담당)
-		if (playerVelocity.getY() < 15) { 
-			playerVelocity = playerVelocity.add(0, 3);	
+		if (playerVelocity.getY() < 10) { 
+			playerVelocity = playerVelocity.add(0, 2);	
 		}
         //	movePlayerY(int value)에 playerVelocity값 할당
 		movePlayerY((int)playerVelocity.getY()); 
@@ -211,14 +211,26 @@ public class JAVADOT_Controller {
 ////						player.setTranslateY(); 
 ////						jumpData();
 					}
-			}	
-		}
-		
-		for (Node reset : level.resets) { // 7 : reset블럭 닿으면 재시작
-			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
-				restartGame();
+			}
+			 // energy를 먹으면 jumpNumber를 1 증가시키고 jumpCount에 출력한
+			// energy는 충돌시 Y값을 +4000만큼 증가시켜서 화면에서 제외시킨다 (재시작시 -4000을 줘서 다시 돌려놓음)
+			for (Node energy : level.energys) { 
+				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
+					jumpNumber = jumpNumber+1;
+					jumpCount.setText(""+jumpNumber);
+					energy.setTranslateY(energy.getTranslateY()+4000);
+//					System.out.println(energy.getTranslateY()); // 위치 확인차 임시로 작성한 코드
+				}
 			}
 		}
+		
+//		for (Node reset : level.resets) { // 7 : reset블럭 닿으면 재시작
+//			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
+//				restartGame();
+//				
+//				System.out.println("TouchReset");
+//			}
+//		}
 	}
 
 	public void moveCamera() {
@@ -307,17 +319,13 @@ public class JAVADOT_Controller {
 				}
 				
                 // RIGHT버튼을 누르면 player객체의 x위치를 +1만큼씩, LEFT버튼을 누르면 x위치를 -1만큼씩이
-				player.setTranslateX(player.getTranslateX()+(movingRight ? 1 : -1)); 
+				player.setTranslateX(player.getTranslateX()+(movingRight ? 0.5 : -0.5)); 
 			}
-            
-            // energy를 먹으면 jumpNumber를 1 증가시키고 jumpCount에 출력한
-			// energy는 충돌시 Y값을 +4000만큼 증가시켜서 화면에서 제외시킨다 (재시작시 -4000을 줘서 다시 돌려놓음)
-			for (Node energy : level.energys) { 
-				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
-					jumpNumber = jumpNumber+1;
-					jumpCount.setText(""+jumpNumber);
-					energy.setTranslateY(energy.getTranslateY()+4000);
-//					System.out.println(energy.getTranslateY()); // 위치 확인차 임시로 작성한 코드
+			for (Node reset : level.resets) { // 7 : reset블럭 닿으면 재시작
+				if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
+					restartGame();
+					
+					System.out.println("TouchReset");
 				}
 			}
 		}
@@ -342,7 +350,7 @@ public class JAVADOT_Controller {
                             	// 점프시 윗벽이 막혀있으면 더 안올라가짐
 								if (player.getTranslateY() == block.getTranslateY() + 10) { 
 									//윗벽에 막혔을 시 Y값을 +1해준다(붙어있으면 안움직임) 
-                                    player.setTranslateY(player.getTranslateY() + 1); 
+//                                    player.setTranslateY(player.getTranslateY() + 1); 
 									// 윗벽에 붙었을때 점프버튼 작동x
                                     canJump = false; 
 									return;
@@ -374,15 +382,6 @@ public class JAVADOT_Controller {
 							}
 						}
 					}
-					
-					for (Node energy : level.energys) { // player와 energy 충돌구현 (충돌시 jumpNumber값 +1, 점프횟수 시각화, energy객체는 이동시켜서 화면에 안보이게함
-						if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
-							jumpNumber = jumpNumber+1;
-							jumpCount.setText(""+jumpNumber);
-							energy.setTranslateY(energy.getTranslateY()+4000); 
-						}
-					}
-					
                     //player객체의 위치 = player객체의 이동좌표 + movingDown이 참이라면 +1 거짓이면 -1
 					player.setTranslateY(player.getTranslateY()+(movingDown ? 1 : -1)); 
 				}
@@ -405,32 +404,32 @@ public class JAVADOT_Controller {
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
 		
 		//쓰레드 미사용 버전
-		AnimationTimer timer = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				sceneUpdate();
-//				System.out.println("sceneUpdate-AnimationTimer");
-			}
-		};
-		timer.start();
-		
-		//쓰레드사용버전
-//		Thread updateThread = new Thread() {
+//		AnimationTimer timer = new AnimationTimer() {
 //			@Override
-//			public void run() {
-//				AnimationTimer timer = new AnimationTimer() {
-//					@Override
-//					public void handle(long now) {
-//						sceneUpdate();
-//					}
-//				};
-//				timer.start();
-//				System.out.println("UT"); //임시로넣은것
+//			public void handle(long now) {
+//				sceneUpdate();
+////				System.out.println("sceneUpdate-AnimationTimer");
 //			}
 //		};
-//		Platform.runLater(updateThread);
-//		updateThread.setDaemon(true);
-//		updateThread.start();
+//		timer.start();
+		
+		//쓰레드사용버전
+		Thread updateThread = new Thread() {
+			@Override
+			public void run() {
+				AnimationTimer timer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						sceneUpdate();
+					}
+				};
+				timer.start();
+				System.out.println("UT"); //임시로넣은것
+			}
+		};
+		Platform.runLater(updateThread);
+		updateThread.setDaemon(true);
+		updateThread.start();
 
 //		Thread cameraThread = new Thread() {
 //				@Override
@@ -493,7 +492,9 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 	}
 	public Node levelData() {
 		levelWidth = ObjectData1.LEVEL1[0].length() * 10; 
-		
+		blockContainer.setCache(true);
+		blockContainer.setCacheShape(true);
+		blockContainer.setCacheHint(CacheHint.SPEED);
 		for (int i = 0; i < ObjectData1.LEVEL1.length; i++) {
 			String line = ObjectData1.LEVEL1[i];
 			for (int j = 0; j < line.length(); j++) {
@@ -505,7 +506,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 						blocks.add(block);
 						break;
 					case '2':
-						Node energy = createObject(j*10, i*10, 5, 5, Color.GOLD);
+						Node energy = createObject(j*10, i*10, 7, 7, Color.GOLD);
 						energys.add(energy);
 						break;
 					case '3':
@@ -561,5 +562,6 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 		}
 		return blockContainer;
 	}
+	
 }
 
