@@ -1,5 +1,6 @@
 # JAVADOT-platformer-game
 자바를 이용해서 만든 로그라이크 형식의 플랫폼게임입니다
+https://coqoa.tistory.com/category/%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/%EA%B0%9C%EC%9D%B8%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8
 
 ### 210727 
 >재실행을 반복하면 느려지는 현상을 해결하기 위해서  
