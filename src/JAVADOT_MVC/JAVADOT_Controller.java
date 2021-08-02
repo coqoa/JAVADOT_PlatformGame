@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.xml.soap.SOAPPart;
+import javax.swing.ListCellRenderer;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
@@ -33,17 +33,26 @@ public class JAVADOT_Controller {
 	public Pane mainContainer = new Pane();
 	public HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
 	public Point2D playerVelocity = new Point2D(0, 0);
-	public boolean canJump = true;
-	public boolean pressESC;
-	
+	public Rectangle bg;
+	// 클래스 참조 변수
 	LevelData level = new LevelData(); //LevelData클래스 사용하기 위한 level객체 생성
 	JAVADOT_Main mainClass = new JAVADOT_Main();
 	
+	public void restartGame() {
+		player.setTranslateX(640);
+		player.setTranslateY(550);
+		level.blockContainer.setTranslateX(0);
+		jumpData();
+		for (Node energy : level.energys) { // player와 energy 충돌구현 (충돌시 jumpNumber값 +1, 점프횟수 시각화, energy객체는 이동시켜서 화면에 안보이게함
+			if (energy.getTranslateY() > 4000) {
+				energy.setTranslateY(energy.getTranslateY()-4000);
+			}
+		}
+	}
 	///점프관련 변수, 메서드
 	int jumpNumber;
 	public Text jumpCount = new Text();
 	public Button jumpCountButton = new Button();
-
 	public void jumpData() {
 		
 		jumpNumber = 1; //시작시 가지는 점프횟수 기본값
@@ -61,31 +70,31 @@ public class JAVADOT_Controller {
 				jumpNumber--;
 				jumpCount.setText(""+jumpNumber);
 				jumpPlayer();
-				System.out.println(playerVelocity);
+				System.out.println(playerVelocity + "점프높이");
 			}
 		});
 	}
     
+	public boolean canJump = true;
 	public void jumpPlayer() {
 		if (canJump) {
-			playerVelocity = playerVelocity.add(0, -35);
+			playerVelocity = playerVelocity.add(0, -40);
 			canJump = false;
 		}
 	}
 	
 	public Node mainPage() {
-		
 		// 맨 위에 위치해야 player객체가 door보다 앞에 표시됨, 매개변수를 매개변수로 넣음
 		level.levelData(); 
     	
 		//게임프레임, 배경화면 색깔
-		Rectangle bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
+		bg = new Rectangle(1280, 720, Color.LIGHTSKYBLUE);
 		
         // jumpCount, jumpCountButton
 		jumpData(); 
 			
 		// createObject (blockContainer)
-		player = level.createObject(0, 600, 20, 20, Color.DODGERBLUE);
+		player = level.createObject(630, 550, 20, 20, Color.DODGERBLUE);
 		
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
 		return mainContainer;
@@ -100,106 +109,125 @@ public class JAVADOT_Controller {
 		
 	// AnimationTimer로 매번 업데이트
 	public void sceneUpdate() { 
-		
-		
-		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -3를 입력		
+		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -6을 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
-			movePlayerX(-6);
+			movePlayerX(-9);
 		}
-        //	RIGHT키를 누르고 player객체의 오른쪽 경계가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 3를 입력
+        //	RIGHT키를 누르고 player객체의 오른쪽 경가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 6을 입력
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
-			movePlayerX(6);	
+			movePlayerX(9);	
 		}
 		
-		
+		// esc버튼으로 재시작
 		if (isPressed(KeyCode.ESCAPE)) {
-			if(player.getTranslateX() > -1) {
-				//재실행 코드
-		player.setTranslateX(-1000000);
-		
-		
-//		try {
-//		mainClass.start(stage);
-//		} catch (IOException e) {
-//		e.printStackTrace();
-//		}
-				
-//	scene = null;
-//	stage = null;
-//	mainContainer = null;
-//	level.blockContainer = null;
-	System.out.println(scene);
-	System.out.println(stage);
-	System.out.println(mainContainer);
+			if(player.getTranslateX() > 1) {
+				restartGame();
 			}
 		}
+		if (isPressed(KeyCode.F11)) { //종료단축키
+			if(player.getTranslateX() > -1) {
+				System.exit(0);
+			}
+		}
+		
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 담당)
-		if (playerVelocity.getY() < 10) { 
-			playerVelocity = playerVelocity.add(0, 2);	
+		if (playerVelocity.getY() < 15) { 
+			playerVelocity = playerVelocity.add(0, 3);	
 		}
         //	movePlayerY(int value)에 playerVelocity값 할당
 		movePlayerY((int)playerVelocity.getY()); 
 		
-//        //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
-//		//	blockContainer의 X값 이동(-(player의X값-640만))
-//		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
-//			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
-//		}
 		
-		for (Node reset : level.resets) { // 7
-			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
-				//재실행 코드
-				try {
-					//reset블럭과 충돌시 player의 Y값을 변경시켜서 반복수행을 막는다
-					player.setTranslateY(-1000000);
-//					try {
-//						mainClass.stop();
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-					level.blockContainer.getChildren().removeAll();
-					mainContainer.getChildren().removeAll();
-					stage.close();
-					mainClass.start(stage);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		for (Node door : level.doors) { // 3 door 충돌체크 메서드
+		for (Node door : level.doors) { // 3 : door 충돌체크 메서드
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
 				
-					if (player.getTranslateX() > -10 && player.getTranslateX() < 3850) { 
-						level.blockContainer.setLayoutX(4700); //카메라 위치 지정
-						level.blockContainer.setLayoutY(0);
-						player.setTranslateX(4700); // player 1번맵에서 2번맵으로 이동
+					if (player.getTranslateX() > 0 && player.getTranslateX() < 4490) { // 1번맵
+						level.blockContainer.setTranslateX(4700); //카메라 위치 지정
+						level.blockContainer.setTranslateY(0);
+						
+						System.out.println(player.getTranslateX()+" 1번도어");
+						
+						player.setTranslateX(5250); // player 1번맵에서 2번맵으로 이동
 						player.setTranslateY(600); 
 						jumpData(); //점프데이터 초기화 (횟수1로)
 						
-					}else if (player.getTranslateX() > 4000 && player.getTranslateX() < 8470) { // // 1번맵 door터치시 플레이어 위치 확인 
-						level.blockContainer.setLayoutX(9300); //카메라 위치 지정
-						level.blockContainer.setLayoutY(0);
-						player.setTranslateX(9300); // player ?번맵에서 ?번맵으로 이동
+					}else if (player.getTranslateX() > 5170 && player.getTranslateX() < 9020) { // 2번맵 
+						level.blockContainer.setTranslateX(9800); //카메라 위치 지정
+						level.blockContainer.setTranslateY(0);
+						
+						System.out.println(player.getTranslateX()+" 2번도어");
+						
+						player.setTranslateX(9800); // player ?번맵에서 ?번맵으로 이동
 						player.setTranslateY(600); 
 						jumpData();
-//					}else if (player.getTranslateX() > __ && player.getTranslateX() < __) { // // 1번맵 door터치시 플레이어 위치 확인 
-//						level.blockContainer.setLayoutX(); //카메라 위치 지정
-//						level.blockContainer.setLayoutY();
+					
+					}else if (player.getTranslateX() > 9700 && player.getTranslateX() < 13550 ) { // 3번맵 
+						level.blockContainer.setTranslateX(14400); //카메라 위치 지정
+						level.blockContainer.setTranslateY(0);
+						
+						System.out.println(player.getTranslateX()+" 3번도어");
+						
+						player.setTranslateX(14400); // player ?번맵에서 ?번맵으로 이동
+						player.setTranslateY(600); 
+						jumpData();
+					
+					}else if (player.getTranslateX() > 14230 && player.getTranslateX() < 18080) { // 4번맵 
+						level.blockContainer.setTranslateX(18900); //카메라 위치 지정
+						level.blockContainer.setTranslateY(0);
+						
+						System.out.println(player.getTranslateX()+" 4번도어");
+						
+						player.setTranslateX(18900); // player ?번맵에서 ?번맵으로 이동
+						player.setTranslateY(600); 
+						jumpData();
+						
+					}else if (player.getTranslateX() > 18760 && player.getTranslateX() < 22610) { // 5번맵 
+						level.blockContainer.setTranslateX(23450); //카메라 위치 지정
+						level.blockContainer.setTranslateY(0);
+						
+						System.out.println(player.getTranslateX()+" 5번도어");
+						
+						player.setTranslateX(23450); // player ?번맵에서 ?번맵으로 이동
+						player.setTranslateY(600); 
+						jumpData();
+						
+					}else if (player.getTranslateX() > 23300 && player.getTranslateX() < 27140) { // 6번맵 
+//						level.blockContainer.setTranslateX(); //카메라 위치 지정
+//						level.blockContainer.setTranslateY();
+						
+						System.out.println(player.getTranslateX()+" 6번도어");
+						
 //						player.setTranslateX(); // player ?번맵에서 ?번맵으로 이동
 //						player.setTranslateY(); 
-//						jumpData();
+						jumpData();
+						
+//					}else if (player.getTranslateX() > __ && player.getTranslateX() < __) { // __번맵
+////						level.blockContainer.setTranslateX(); //카메라 위치 지정
+////						level.blockContainer.setTranslateY();
+////						
+////						System.out.println(player.getTranslateX()+" ?번도어");
+////						
+////						player.setTranslateX(); // player ?번맵에서 ?번맵으로 이동
+////						player.setTranslateY(); 
+////						jumpData();
 					}
 			}	
 		}
+		
+		for (Node reset : level.resets) { // 7 : reset블럭 닿으면 재시작
+			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
+				restartGame();
+			}
 		}
+	}
 
 	public void moveCamera() {
 		 //  카메라이동 player의 위치 : 640 ~ (전체화면 - 640)사이일때
 		//	blockContainer의 X값 이동(-(player의X값-640만))
 		if (player.getTranslateX() > 640 && player.getTranslateX() < level.levelWidth-640 ) {
-			level.blockContainer.setLayoutX(-(player.getTranslateX()-640));
-		}
+			level.blockContainer.setTranslateX(-(player.getTranslateX()-640));
+			
+		}	
 	}
 
 	public void movePlayerX(int value) {
@@ -283,12 +311,13 @@ public class JAVADOT_Controller {
 			}
             
             // energy를 먹으면 jumpNumber를 1 증가시키고 jumpCount에 출력한
-			// energy는 충돌시 Y값을 +500만큼 증가시켜서 화면에서 제외시킨다 
-			for (Node energy : level.energys) { // player와 energy 충돌구현 (충돌시 jumpNumber값 +1, 점프횟수 시각화, energy객체는 이동시켜서 화면에 안보이게함
+			// energy는 충돌시 Y값을 +4000만큼 증가시켜서 화면에서 제외시킨다 (재시작시 -4000을 줘서 다시 돌려놓음)
+			for (Node energy : level.energys) { 
 				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
 					jumpNumber = jumpNumber+1;
 					jumpCount.setText(""+jumpNumber);
-					energy.setTranslateY(energy.getTranslateY()+4000); 
+					energy.setTranslateY(energy.getTranslateY()+4000);
+//					System.out.println(energy.getTranslateY()); // 위치 확인차 임시로 작성한 코드
 				}
 			}
 		}
@@ -357,36 +386,17 @@ public class JAVADOT_Controller {
                     //player객체의 위치 = player객체의 이동좌표 + movingDown이 참이라면 +1 거짓이면 -1
 					player.setTranslateY(player.getTranslateY()+(movingDown ? 1 : -1)); 
 				}
-//				for (Node door : doors) { x충돌구현에 해놔서 주석처리해놓음
-//					if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
-//						System.out.println("door touch");
-//					}
-//				}
 			}
 	
 	public void gameStartButton(ActionEvent event) throws IOException {
 		
 		mainPage();
-
-//		mainPage().setCache(true);
-		mainPage().setCacheHint(CacheHint.SPEED);
-
-//		mainContainer.setCache(true);
-//		mainContainer.setCacheShape(true);
-//		mainContainer.setCacheHint(CacheHint.SPEED);
-
-//		level.blockContainer.setCache(true); 
-//		level.blockContainer.setCacheShape(true);
-//		level.blockContainer.setCacheHint(CacheHint.SPEED);
-
+		mainContainer.setCache(true);
+		mainContainer.setCacheShape(true);
+		mainContainer.setCacheHint(CacheHint.SPEED);
 		
 		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 		scene = new Scene(mainContainer, 1280, 720);
-	System.out.println(scene);
-	System.out.println(stage);
-		
-		stage.setTitle("JAVADOT");
-		stage.setResizable(false);
 		stage.setScene(scene);
 		stage.show();
 		
@@ -394,64 +404,70 @@ public class JAVADOT_Controller {
 		scene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		scene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
 		
-//		Thread updateThread = new Thread() {
-//			@Override
-//			public void run() {
-				AnimationTimer timer = new AnimationTimer() {
-					@Override
-					public void handle(long now) {
-						sceneUpdate();
-					}
-				};
-				timer.start();
-
-//				EventHandler<ActionEvent> scenEventHandler = new EventHandler<ActionEvent>() {
-//					public void handle(ActionEvent e) {
-//						sceneUpdate();
-//						}
-//					};
-//				Timeline sceneAnimation = new Timeline(new KeyFrame(Duration.millis(15), scenEventHandler));
-//				sceneAnimation.setCycleCount(Timeline.INDEFINITE);
-//				sceneAnimation.play();
-				
-//				}
-//		};
-//		Platform.runLater(updateThread);
-//		updateThread.setDaemon(true);
-//		updateThread.start();
-		Thread cameraThread = new Thread() {
-				@Override
-				public void run() {
-				EventHandler<ActionEvent> sceneMove = new EventHandler<ActionEvent>() {
-					public void handle(ActionEvent e) {
-						moveCamera();
-						}
-					};
-				Timeline sceneAnimation = new Timeline(new KeyFrame(Duration.millis(1), sceneMove));
-				sceneAnimation.setCycleCount(Timeline.INDEFINITE);
-				sceneAnimation.play();
-				}
+		//쓰레드 미사용 버전
+		AnimationTimer timer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				sceneUpdate();
+//				System.out.println("sceneUpdate-AnimationTimer");
+			}
 		};
-		Platform.runLater(cameraThread);
-		cameraThread.setDaemon(true);
-		cameraThread.start();
-				
-//		Thread cameraThread = new Thread() {
+		timer.start();
+		
+		//쓰레드사용버전
+//		Thread updateThread = new Thread() {
 //			@Override
 //			public void run() {
 //				AnimationTimer timer = new AnimationTimer() {
 //					@Override
 //					public void handle(long now) {
-//						moveCamera();
-////						System.out.println("CAMERA");
+//						sceneUpdate();
 //					}
 //				};
 //				timer.start();
+//				System.out.println("UT"); //임시로넣은것
+//			}
+//		};
+//		Platform.runLater(updateThread);
+//		updateThread.setDaemon(true);
+//		updateThread.start();
+
+//		Thread cameraThread = new Thread() {
+//				@Override
+//				public void run() {
+//				EventHandler<ActionEvent> sceneMove = new EventHandler<ActionEvent>() {
+//					public void handle(ActionEvent e) {
+//						moveCamera();
+//						
+//						}
+//					};
+//				Timeline sceneAnimation = new Timeline(new KeyFrame(Duration.millis(0.1), sceneMove));
+//				sceneAnimation.setCycleCount(Timeline.INDEFINITE);
+//				sceneAnimation.play();
+//				System.out.println("moveCamera - timeline 0.1millis");
 //				}
 //		};
 //		Platform.runLater(cameraThread);
 //		cameraThread.setDaemon(true);
 //		cameraThread.start();
+				
+		//화면이동을 animationTimer로 할지 timeline으로할지 추후에 결정
+		Thread cameraThread = new Thread() {
+			@Override
+			public void run() {
+				AnimationTimer timer = new AnimationTimer() {
+					@Override
+					public void handle(long now) {
+						moveCamera();
+//						System.out.println("CAMERA-animationTimer");
+					}
+				};
+				timer.start();
+				}
+		};
+		Platform.runLater(cameraThread);
+		cameraThread.setDaemon(true);
+		cameraThread.start();
 	}
 }
 
@@ -511,6 +527,26 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 					case 'W':
 						Node cloud = createObject(j*10, i*10, 10, 10, Color.WHITE);
 						bgObject.add(cloud);
+						break;
+					case 'G':
+						Node darkGreen = createObject(j*10, i*10, 10, 10, Color.DARKGREEN);
+						bgObject.add(darkGreen);
+						break;
+					case 'g':
+						Node lightGreen = createObject(j*10, i*10, 10, 10, Color.LIGHTGREEN);
+						bgObject.add(lightGreen);
+						break;
+					case 'B':
+						Node darkBrown = createObject(j*10, i*10, 10, 10, Color.SADDLEBROWN);
+						bgObject.add(darkBrown);
+						break;
+					case 'b':
+						Node lightBrown = createObject(j*10, i*10, 10, 10, Color.DARKGOLDENROD);
+						bgObject.add(lightBrown);
+						break;
+					case 'K':
+						Node black = createObject(j*10, i*10, 10, 10, Color.BLACK);
+						bgObject.add(black);
 						break;
 					case '7':
 						Node reset = createObject(j*10, i*10, 10, 10, Color.WHITE);
