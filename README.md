@@ -24,7 +24,8 @@ https://coqoa.tistory.com/39?category=952814
 >화면은 player객체를 중심으로 같이 움직이기 때문에 단순하게 player객체의 프레임당 움직임을 짧게 구현하면 부드러운 화면이 될 것 같았다
 >기존에는 movingRight ? 1 : 1이었는데 1을 0.5로 바꾸고 해결했음
 
-![스크린샷 2021-08-04 오전 1 33 11](https://user-images.githubusercontent.com/81023768/128052639-995aa224-53b8-4937-aa0d-7a81be7ca0a7.png)
+<img width="816" alt="스크린샷 2021-08-04 오전 1 59 48" src="https://user-images.githubusercontent.com/81023768/128056525-df3741f9-4e6c-49be-9e99-0d09aa7bb21f.png">
+
 >점프할때 윗벽에 막혔을때 부자연스럽던 부분 해결
 >2번째 줄 코드를 추가해서 충돌시 바로 떨어지도록 구현했음
 
