@@ -145,8 +145,8 @@ public class JAVADOT_Controller {
 		}
 		if (isPressed(KeyCode.TAB)) {
 			if(player.getTranslateX() > 1) {
-				player.setTranslateX(17800);
-				player.setTranslateY(-0);
+				player.setTranslateX(14600);
+				player.setTranslateY(0);
 //				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()+17000);
 //				level.blockContainer.setTranslateY(level.blockContainer.getTranslateY());
 			}
@@ -381,6 +381,41 @@ public class JAVADOT_Controller {
 						}
 					}
 				}
+				for (Node moveYDownBlock : level.moveYDownBlocks) { // layout : 투명 벽
+					if (player.getBoundsInParent().intersects(moveYDownBlock.getBoundsInParent())) {
+						if (movingRight) {
+                        	// RIGHT입력시 player의 오른쪽경계와 layout의 왼쪽경계가 맞닿았을때 멈추게함
+							if (player.getTranslateX() + 20 == moveYDownBlock.getTranslateX()) { 
+								player.setTranslateX(player.getTranslateX()-1);
+								return;
+							}
+						} else  {
+                        	// LEFT입력시 player의 왼쪽경계와 layout의 오른쪽 경계가 맞닿았을때 멈추게 함
+							if (player.getTranslateX() == moveYDownBlock.getTranslateX() + 10) { 
+								player.setTranslateX(player.getTranslateX()+1);
+								return;
+							}
+						}
+					}
+				}
+				
+				for (Node moveYUpBlock : level.moveYUpBlocks) { // layout : 투명 벽
+					if (player.getBoundsInParent().intersects(moveYUpBlock.getBoundsInParent())) {
+						if (movingRight) {
+                        	// RIGHT입력시 player의 오른쪽경계와 layout의 왼쪽경계가 맞닿았을때 멈추게함
+							if (player.getTranslateX() + 20 == moveYUpBlock.getTranslateX()) { 
+								player.setTranslateX(player.getTranslateX()-1);
+								return;
+							}
+						} else  {
+                        	// LEFT입력시 player의 왼쪽경계와 layout의 오른쪽 경계가 맞닿았을때 멈추게 함
+							if (player.getTranslateX() == moveYUpBlock.getTranslateX() + 10) { 
+								player.setTranslateX(player.getTranslateX()+1);
+								return;
+							}
+						}
+					}
+				}
 				for (Node layout : level.layouts) { // layout : 투명 벽
 					if (player.getBoundsInParent().intersects(layout.getBoundsInParent())) {
 						if (movingRight) {
@@ -495,7 +530,7 @@ public class JAVADOT_Controller {
 								// player의 바닥변과 block의 윗면이 충돌하면
                                 if (player.getTranslateY() + 20 == moveYDownBlock.getTranslateY()) { 
 									// player객체의 y값을 +2 해주고 점프버튼이 작동하도록 해줌
-                                    player.setTranslateY(player.getTranslateY()+2);		//딱붙으면 이거로 결정
+                                    player.setTranslateY(player.getTranslateY()+1);		//딱붙으면 이거로 결정
 									canJump=true; 
 									return;
 								}
@@ -519,7 +554,7 @@ public class JAVADOT_Controller {
 								// player의 바닥변과 block의 윗면이 충돌하면
                                 if (player.getTranslateY() + 20 == moveYUpBlock.getTranslateY()) { 
 									// player객체의 y값을 -1해주고 점프버튼이 작동하도록 해줌
-                                    player.setTranslateY(player.getTranslateY() - 2);
+                                    player.setTranslateY(player.getTranslateY() - 3);
 									canJump=true; 
 									return;
                                 }
