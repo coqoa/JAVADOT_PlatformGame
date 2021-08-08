@@ -1,35 +1,28 @@
 package JAVADOT_MVC;
 
 import java.io.IOException;
-import java.security.PublicKey;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
-import com.sun.javafx.image.impl.ByteBgr;
 
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class JAVADOT_Controller {
 	//변수선언
@@ -46,6 +39,10 @@ public class JAVADOT_Controller {
 	JAVADOT_Main mainClass = new JAVADOT_Main();
 	//재시작 메서드
 	public void restartGame() {
+//		Media restartSound1 = new Media(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/dead1.MP3").toUri().toString());
+//		MediaPlayer restartSound = new MediaPlayer(restartSound1);
+//		restartSound.play();
+		
 		player.setTranslateX(10);
 		player.setTranslateY(550);
 		level.blockContainer.setTranslateX(0);
@@ -79,6 +76,10 @@ public class JAVADOT_Controller {
 				jumpCount.setText(""+jumpNumber);
 				jumpPlayer();
 				System.out.println(playerVelocity + "점프높이");
+				
+//				Media jump = new Media(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/jumpSound2.mp3").toUri().toString());
+//				MediaPlayer jumpSound = new MediaPlayer(jump);
+//				jumpSound.play();
 			}
 		});
 	}
@@ -87,7 +88,7 @@ public class JAVADOT_Controller {
 	public void jumpPlayer() {
 		
 		if (canJump) {
-			playerVelocity = playerVelocity.add(0, -34);
+			playerVelocity = playerVelocity.add(0, -33);
 			canJump = false;
 		}
 	}
@@ -121,11 +122,11 @@ public class JAVADOT_Controller {
 	public void sceneUpdate() { 
 		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -14을 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
-			movePlayerX(-14);
+			movePlayerX(-12);
 		}
         //	RIGHT키를 누르고 player객체의 오른쪽 경가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 14을 입력
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
-			movePlayerX(14);	
+			movePlayerX(12);	
 		}
 		// esc버튼으로 재시작
 		if (isPressed(KeyCode.ESCAPE)) {
@@ -145,8 +146,8 @@ public class JAVADOT_Controller {
 		}
 		if (isPressed(KeyCode.TAB)) {
 			if(player.getTranslateX() > 1) {
-				player.setTranslateX(14600);
-				player.setTranslateY(0);
+				player.setTranslateX(21000);
+				player.setTranslateY(100);
 //				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()+17000);
 //				level.blockContainer.setTranslateY(level.blockContainer.getTranslateY());
 			}
@@ -158,7 +159,7 @@ public class JAVADOT_Controller {
 		}
 		//
         //	playerVelocity의 y값이 10보다 작으면 y값 2씩추가(체공시간, 점프높이 조절)
-		if (playerVelocity.getY() < 10) { 
+		if (playerVelocity.getY() < 9) { 
 			playerVelocity = playerVelocity.add(0, 2);	
 		}
         //	movePlayerY(int value)에 playerVelocity값 할당
@@ -167,6 +168,9 @@ public class JAVADOT_Controller {
 		
 		for (Node door : level.doors) { // 3 : door 충돌체크 메서드
 			if (player.getBoundsInParent().intersects(door.getBoundsInParent())) {
+//				Media clear = new Media(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/clear.wav").toUri().toString());
+//				MediaPlayer clearSound = new MediaPlayer(clear);
+//				clearSound.play();
 					if (player.getTranslateX() > 0 && player.getTranslateX() < 4490) { // 1번맵 내에서 충돌시 2번맵으로 이동
 						level.blockContainer.setTranslateX(4700); //카메라 위치 지정
 						level.blockContainer.setTranslateY(0);
@@ -203,7 +207,7 @@ public class JAVADOT_Controller {
 						
 						System.out.println(player.getTranslateX()+" 4번도어");//임시저장코드
 						
-						player.setTranslateX(18900); // 5번맵 생성위치
+						player.setTranslateX(18790); // 5번맵 생성위치
 						player.setTranslateY(600); 
 						jumpData();
 						
@@ -238,14 +242,18 @@ public class JAVADOT_Controller {
 ////						jumpData();
 					}
 			}
+		}
 			 // energy를 먹으면 jumpNumber를 1 증가시키고 jumpCount에 출력하고
 			 // energy의 Y값을 +4000만큼 증가시켜서 화면에서 제외시킨다 (재시작시 -4000을 줘서 다시 돌려놓음)
-			for (Node energy : level.energys) { 
-				if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
-					jumpNumber = jumpNumber+1;
-					jumpCount.setText(""+jumpNumber);
-					energy.setTranslateY(energy.getTranslateY()+4000);
-				}
+		for (Node energy : level.energys) { 
+			if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
+//				Media energySound1 = new Media(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/energy.wav").toUri().toString());
+//				MediaPlayer energySound = new MediaPlayer(energySound1);
+//				energySound.play();
+				
+				jumpNumber = jumpNumber+1;
+				jumpCount.setText(""+jumpNumber);
+				energy.setTranslateY(energy.getTranslateY()+4000);
 			}
 		}
 		
@@ -257,20 +265,34 @@ public class JAVADOT_Controller {
 		
 		for (Node moveYDownBlock : level.moveYDownBlocks) {
 			//player와 block비교
-				if (moveYDownBlock.getTranslateY() < 730 ) {
-					moveYDownBlock.setTranslateY(moveYDownBlock.getTranslateY()+2);
-				}else {
-					moveYDownBlock.setTranslateY(moveYDownBlock.getTranslateY()-750);
-				}
+			if (moveYDownBlock.getTranslateY() < 730 ) {
+				moveYDownBlock.setTranslateY(moveYDownBlock.getTranslateY()+2);
+			}else {
+				moveYDownBlock.setTranslateY(moveYDownBlock.getTranslateY()-750);
 			}
-		
-	
+		}
+		for (Node moveYDownBlockx2 : level.moveYDownBlockx2s) {
+			//player와 block비교
+			if (moveYDownBlockx2.getTranslateY() < 730 ) {
+				moveYDownBlockx2.setTranslateY(moveYDownBlockx2.getTranslateY()+3);
+			}else {
+				moveYDownBlockx2.setTranslateY(moveYDownBlockx2.getTranslateY()-750);
+			}
+		}
 		for (Node moveYUpBlock : level.moveYUpBlocks) {
 			//player와 block비교
 				if (moveYUpBlock.getTranslateY() > 0 ) {
 					moveYUpBlock.setTranslateY(moveYUpBlock.getTranslateY()-2);
 				}else {
 					moveYUpBlock.setTranslateY(moveYUpBlock.getTranslateY()+730);
+				}
+		}
+		for (Node moveYUpBlockx2 : level.moveYUpBlockx2s) {
+			//player와 block비교
+				if (moveYUpBlockx2.getTranslateY() > 0 ) {
+					moveYUpBlockx2.setTranslateY(moveYUpBlockx2.getTranslateY()-3);
+				}else {
+					moveYUpBlockx2.setTranslateY(moveYUpBlockx2.getTranslateY()+730);
 				}
 		}
 		for (Node resetDownBlock : level.resetDownBlocks) {
@@ -284,6 +306,17 @@ public class JAVADOT_Controller {
 					resetDownBlock.setTranslateY(resetDownBlock.getTranslateY()-750);
 			}
 		}
+		for (Node resetDownBlockx2 : level.resetDownBlockx2s) {
+			//player와 block비교
+			if (player.getBoundsInParent().intersects(resetDownBlockx2.getBoundsInParent())) {
+				restartGame();
+			}
+			if (resetDownBlockx2.getTranslateY() < 730 ) {
+				resetDownBlockx2.setTranslateY(resetDownBlockx2.getTranslateY()+3);
+			}else {
+				resetDownBlockx2.setTranslateY(resetDownBlockx2.getTranslateY()-750);
+			}
+		}
 		for (Node resetUpBlock : level.resetUpBlocks) {
 			//player와 block비교
 			if (player.getBoundsInParent().intersects(resetUpBlock.getBoundsInParent())) {
@@ -293,6 +326,17 @@ public class JAVADOT_Controller {
 				resetUpBlock.setTranslateY(resetUpBlock.getTranslateY()-2);
 			}else {
 				resetUpBlock.setTranslateY(resetUpBlock.getTranslateY()+730);
+			}
+		}
+		for (Node resetUpBlockx2 : level.resetUpBlockx2s) {
+			//player와 block비교
+			if (player.getBoundsInParent().intersects(resetUpBlockx2.getBoundsInParent())) {
+				restartGame();
+			}
+			if (resetUpBlockx2.getTranslateY() > 0 ) {
+				resetUpBlockx2.setTranslateY(resetUpBlockx2.getTranslateY()-3);
+			}else {
+				resetUpBlockx2.setTranslateY(resetUpBlockx2.getTranslateY()+730);
 			}
 		}
 		for (Node moveRightBlock : level.moveRightBlocks) { // 7 : reset블럭 닿으면 재시작
@@ -325,7 +369,8 @@ public class JAVADOT_Controller {
 				// LevelData클래스의 blocks ArrayList에 넣어둔 block를 하나씩 실행
 				for (Node block : level.blocks) { //  block : 초록색 벽
 					if (player.getBoundsInParent().intersects(block.getBoundsInParent())) {
-						if (movingRight) {	//RIGHT
+						if (movingRight) {	
+							//RIGHT
                         	// RIGHT입력시 player의 오른쪽경계와 block의 왼쪽경계가 맞닿았을때
 							if (player.getTranslateX() + 20 == block.getTranslateX()) { 
                             	// player의 y값+10이 block의 y값보다 작다면 y값을 -10해준다 (한칸짜리 block은 뛰어넘게 해줌)
@@ -335,6 +380,7 @@ public class JAVADOT_Controller {
 									// 붙었을때 player객체의 변화를 주는메서드
 									player.setOpacity(0.7);
 								}
+								player.setTranslateY(player.getTranslateY() - 1);
 								return;
 							}
 						} else  {	//LEFT
@@ -347,6 +393,7 @@ public class JAVADOT_Controller {
 									// 붙었을때 player객체의 변화를 주는메서드
 									player.setOpacity(0.5);
                                 }
+                                player.setTranslateY(player.getTranslateY() - 1);
                                 return;
 							}
 						}
@@ -398,7 +445,23 @@ public class JAVADOT_Controller {
 						}
 					}
 				}
-				
+				for (Node moveYDownBlockx2 : level.moveYDownBlockx2s) { // layout : 투명 벽
+					if (player.getBoundsInParent().intersects(moveYDownBlockx2.getBoundsInParent())) {
+						if (movingRight) {
+                        	// RIGHT입력시 player의 오른쪽경계와 layout의 왼쪽경계가 맞닿았을때 멈추게함
+							if (player.getTranslateX() + 20 == moveYDownBlockx2.getTranslateX()) { 
+								player.setTranslateX(player.getTranslateX()-1);
+								return;
+							}
+						} else  {
+                        	// LEFT입력시 player의 왼쪽경계와 layout의 오른쪽 경계가 맞닿았을때 멈추게 함
+							if (player.getTranslateX() == moveYDownBlockx2.getTranslateX() + 10) { 
+								player.setTranslateX(player.getTranslateX()+1);
+								return;
+							}
+						}
+					}
+				}
 				for (Node moveYUpBlock : level.moveYUpBlocks) { // layout : 투명 벽
 					if (player.getBoundsInParent().intersects(moveYUpBlock.getBoundsInParent())) {
 						if (movingRight) {
@@ -410,6 +473,23 @@ public class JAVADOT_Controller {
 						} else  {
                         	// LEFT입력시 player의 왼쪽경계와 layout의 오른쪽 경계가 맞닿았을때 멈추게 함
 							if (player.getTranslateX() == moveYUpBlock.getTranslateX() + 10) { 
+								player.setTranslateX(player.getTranslateX()+1);
+								return;
+							}
+						}
+					}
+				}
+				for (Node moveYUpBlockx2 : level.moveYUpBlockx2s) { // layout : 투명 벽
+					if (player.getBoundsInParent().intersects(moveYUpBlockx2.getBoundsInParent())) {
+						if (movingRight) {
+                        	// RIGHT입력시 player의 오른쪽경계와 layout의 왼쪽경계가 맞닿았을때 멈추게함
+							if (player.getTranslateX() + 20 == moveYUpBlockx2.getTranslateX()) { 
+								player.setTranslateX(player.getTranslateX()-1);
+								return;
+							}
+						} else  {
+                        	// LEFT입력시 player의 왼쪽경계와 layout의 오른쪽 경계가 맞닿았을때 멈추게 함
+							if (player.getTranslateX() == moveYUpBlockx2.getTranslateX() + 10) { 
 								player.setTranslateX(player.getTranslateX()+1);
 								return;
 							}
@@ -466,7 +546,7 @@ public class JAVADOT_Controller {
                             	// 점프시 윗벽이 막혀있으면 더 안올라가짐
 								if (player.getTranslateY() == block.getTranslateY() + 10) { 
 									// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게 
-                                    playerVelocity = playerVelocity.add(0, -playerVelocity.getY()+1);
+                                    playerVelocity = playerVelocity.add(0, -playerVelocity.getY()+2);
 									// 윗벽에 붙었을때 점프버튼 작동x
                                     canJump = false; 
 									return;
@@ -490,7 +570,7 @@ public class JAVADOT_Controller {
                             	// 점프시 윗벽이 막혀있으면 더 안올라가짐
 								if (player.getTranslateY() == slipBlock.getTranslateY() + 10) { 
 									// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게 
-                                    playerVelocity = playerVelocity.add(0, -playerVelocity.getY()+1);
+                                    playerVelocity = playerVelocity.add(0, -playerVelocity.getY()+2);
 									// 윗벽에 붙었을때 점프버튼 작동x
                                     canJump = false; 
 									return;
@@ -502,6 +582,10 @@ public class JAVADOT_Controller {
 					for (Node longJump : level.longJumps) {
 						//player와 block비교
                         if (player.getBoundsInParent().intersects(longJump.getBoundsInParent())) { 
+//                        	Media longJumpSound1 = new Media(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/longJump.wav").toUri().toString());
+//                    		MediaPlayer longJumpSound = new MediaPlayer(longJumpSound1);
+//                    		longJumpSound.play();
+                    		
 							if (movingDown) {
 								// player의 바닥변과 block의 윗면이 충돌하면
                                 if (player.getTranslateY() + 19 == longJump.getTranslateY()) { 
@@ -546,6 +630,29 @@ public class JAVADOT_Controller {
 							}
 						}
 					}
+					for (Node moveYDownBlockx2 : level.moveYDownBlockx2s) {
+						//player와 block비교
+                        if (player.getBoundsInParent().intersects(moveYDownBlockx2.getBoundsInParent())) { 
+							if (movingDown) {
+								// player의 바닥변과 block의 윗면이 충돌하면
+                                if (player.getTranslateY() + 20 == moveYDownBlockx2.getTranslateY()) { 
+									// player객체의 y값을 +2 해주고 점프버튼이 작동하도록 해줌
+                                    player.setTranslateY(player.getTranslateY()+1);		//딱붙으면 이거로 결정
+									canJump=true; 
+									return;
+								}
+							} else {
+                            	// 점프시 윗벽이 막혀있으면 더 안올라가짐
+								if (player.getTranslateY() == moveYDownBlockx2.getTranslateY() + 10) { 
+									// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게 
+                                    playerVelocity = playerVelocity.add(0, -playerVelocity.getY()+3);
+									// 윗벽에 붙었을때 점프버튼 작동x
+                                    canJump = false; 
+									return;
+								}
+							}
+						}
+					}
 					
 					for (Node moveYUpBlock : level.moveYUpBlocks) {
 						//player와 block비교
@@ -561,6 +668,29 @@ public class JAVADOT_Controller {
 							} else {
                             	// 점프시 윗벽이 막혀있으면 더 안올라가짐
 								if (player.getTranslateY() == moveYUpBlock.getTranslateY() + 10) { 
+									// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게 
+                                    playerVelocity = playerVelocity.add(0, -playerVelocity.getY()+1);
+									// 윗벽에 붙었을때 점프버튼 작동x
+                                    canJump = false; 
+									return;
+								}
+							}
+						}
+					}
+					for (Node moveYUpBlockx2 : level.moveYUpBlockx2s) {
+						//player와 block비교
+                        if (player.getBoundsInParent().intersects(moveYUpBlockx2.getBoundsInParent())) { 
+							if (movingDown) {
+								// player의 바닥변과 block의 윗면이 충돌하면
+                                if (player.getTranslateY() + 20 == moveYUpBlockx2.getTranslateY()) { 
+									// player객체의 y값을 -1해주고 점프버튼이 작동하도록 해줌
+                                    player.setTranslateY(player.getTranslateY() - 4);
+									canJump=true; 
+									return;
+                                }
+							} else {
+                            	// 점프시 윗벽이 막혀있으면 더 안올라가짐
+								if (player.getTranslateY() == moveYUpBlockx2.getTranslateY() + 10) { 
 									// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게 
                                     playerVelocity = playerVelocity.add(0, -playerVelocity.getY()+1);
 									// 윗벽에 붙었을때 점프버튼 작동x
@@ -694,22 +824,23 @@ public class JAVADOT_Controller {
 class LevelData { //객체생성관련 코드모음 (player, block, energy, door, 등등)
 	public Pane blockContainer = new Pane();
 	public int levelWidth;
+	public ArrayList<Node> resets = new ArrayList<Node>();
 	public ArrayList<Node> blocks = new ArrayList<Node>();
 	public ArrayList<Node> energys = new ArrayList<Node>();
 	public ArrayList<Node> doors = new ArrayList<Node>();
-	public ArrayList<Node> longJumps = new ArrayList<Node>();
-	public ArrayList<Node> leftLongJumps = new ArrayList<Node>();
-	public ArrayList<Node> rightLongJumps = new ArrayList<Node>();
-	public ArrayList<Node> moveYDownBlocks = new ArrayList<Node>();
-	public ArrayList<Node> moveYUpBlocks = new ArrayList<Node>();
-	public ArrayList<Node> resetDownBlocks = new ArrayList<Node>();
-	public ArrayList<Node> resetUpBlocks = new ArrayList<Node>();
-	public ArrayList<Node> moveRightBlocks = new ArrayList<Node>();
-	public ArrayList<Node> moveLeftBlocks = new ArrayList<Node>();
-	
-	public ArrayList<Node> resets = new ArrayList<Node>();
 	public ArrayList<Node> layouts = new ArrayList<Node>();
 	public ArrayList<Node> slipBlocks = new ArrayList<Node>();
+	public ArrayList<Node> longJumps = new ArrayList<Node>();
+	public ArrayList<Node> moveYDownBlocks = new ArrayList<Node>();
+	public ArrayList<Node> moveYUpBlocks = new ArrayList<Node>();
+	public ArrayList<Node> moveYDownBlockx2s = new ArrayList<Node>();
+	public ArrayList<Node> moveYUpBlockx2s = new ArrayList<Node>();
+	public ArrayList<Node> moveRightBlocks = new ArrayList<Node>();
+	public ArrayList<Node> moveLeftBlocks = new ArrayList<Node>();
+	public ArrayList<Node> resetDownBlocks = new ArrayList<Node>();
+	public ArrayList<Node> resetDownBlockx2s = new ArrayList<Node>();
+	public ArrayList<Node> resetUpBlocks = new ArrayList<Node>();
+	public ArrayList<Node> resetUpBlockx2s = new ArrayList<Node>();
 	public ArrayList<Node> bgObject = new ArrayList<Node>(); 
 	
 	public Node createObject(int x, int y, int w, int h, Color color) {
@@ -730,6 +861,7 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 			String line = ObjectData1.LEVEL1[i];
 			for (int j = 0; j < line.length(); j++) {
 				switch (line.charAt(j)) {
+				
 					case '0':
 						break;
 					case '1':
@@ -752,6 +884,10 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 						Node longJump = createObject(j*10, i*10, 10, 10, Color.RED);
 						longJumps.add(longJump);
 						break;
+					case '7':
+						Node reset = createObject(j*10, i*10, 10, 10, Color.WHITE);
+						resets.add(reset);
+						break;
 					case '8':
 						Node moveYDownBlock = createObject(j*10, i*10, 10, 10, Color.DARKGREEN);
 						moveYDownBlocks.add(moveYDownBlock);
@@ -760,6 +896,44 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 						Node moveYUpBlock = createObject(j*10, i*10, 10, 10, Color.DARKGREEN);
 						moveYUpBlocks.add(moveYUpBlock);
 						break;
+					case 'V':
+						Node moveYDownBlockx2 = createObject(j*10, i*10, 10, 10, Color.DARKGREEN);
+						moveYDownBlockx2s.add(moveYDownBlockx2);
+						break;
+					case 'v':
+						Node moveYUpBlockx2 = createObject(j*10, i*10, 10, 10, Color.DARKGREEN);
+						moveYUpBlockx2s.add(moveYUpBlockx2);
+						break;
+					case 'L':
+						Node layout = createObject(j*10, i*10, 10, 10, Color.TRANSPARENT);
+						layouts.add(layout);
+						break;
+					case 'M':
+						Node resetDownBlock = createObject(j*10, i*10, 10, 10, Color.WHITE);
+						resetDownBlocks.add(resetDownBlock);
+						break;
+					case 'H':
+						Node resetDownBlockx2 = createObject(j*10, i*10, 10, 10, Color.WHITE);
+						resetDownBlockx2s.add(resetDownBlockx2);
+						break;
+					case 'm':
+						Node resetUpBlock = createObject(j*10, i*10, 10, 10, Color.WHITE);
+						resetUpBlocks.add(resetUpBlock);
+						break;
+					case 'h':
+						Node resetUpBlockx2 = createObject(j*10, i*10, 10, 10, Color.WHITE);
+						resetUpBlockx2s.add(resetUpBlockx2);
+						break;
+					case 'N':
+						Node moveRightBlock = createObject(j*10, i*10, 10, 10, Color.YELLOWGREEN);
+						moveRightBlocks.add(moveRightBlock);
+						break;
+					case 'n':
+						Node moveLeftBlock = createObject(j*10, i*10, 10, 10, Color.YELLOWGREEN);
+						moveLeftBlocks.add(moveLeftBlock);
+						break;
+					
+						
 					case 'R':
 						Node sunR = createObject(j*10, i*10, 10, 10, Color.RED);
 						bgObject.add(sunR);
@@ -815,32 +989,6 @@ class LevelData { //객체생성관련 코드모음 (player, block, energy, door
 					case 'O':
 						Node gold = createObject(j*10, i*10, 10, 10, Color.GOLD);
 						bgObject.add(gold);
-						break;
-						
-						
-					case '7':
-						Node reset = createObject(j*10, i*10, 10, 10, Color.WHITE);
-						resets.add(reset);
-						break;
-					case 'L':
-						Node layout = createObject(j*10, i*10, 10, 10, Color.TRANSPARENT);
-						layouts.add(layout);
-						break;
-					case 'M':
-						Node resetDownBlock = createObject(j*10, i*10, 10, 10, Color.WHITE);
-						resetDownBlocks.add(resetDownBlock);
-						break;
-					case 'm':
-						Node resetUpBlock = createObject(j*10, i*10, 10, 10, Color.WHITE);
-						resetUpBlocks.add(resetUpBlock);
-						break;
-					case 'N':
-						Node moveRightBlock = createObject(j*10, i*10, 10, 10, Color.YELLOWGREEN);
-						moveRightBlocks.add(moveRightBlock);
-						break;
-					case 'n':
-						Node moveLeftBlock = createObject(j*10, i*10, 10, 10, Color.YELLOWGREEN);
-						moveLeftBlocks.add(moveLeftBlock);
 						break;
 				}
 			}
