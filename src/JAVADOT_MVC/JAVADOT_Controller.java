@@ -72,7 +72,7 @@ public class JAVADOT_Controller {
 		jumpCountButton.setOpacity(0);
 		jumpCountButton.setOnKeyPressed(e->{
 			if (e.getCode() == KeyCode.SPACE && jumpNumber > 0 && canJump) {
-				jumpNumber--;
+//				jumpNumber--;
 				jumpCount.setText(""+jumpNumber);
 				jumpPlayer();
 				System.out.println(playerVelocity + "점프높이");
@@ -122,11 +122,11 @@ public class JAVADOT_Controller {
 	public void sceneUpdate() { 
 		//	LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -14을 입력		
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) { 
-			movePlayerX(-12);
+			movePlayerX(-13);
 		}
         //	RIGHT키를 누르고 player객체의 오른쪽 경가 맵의 넓이보다 작다면 movePlayerX의 매개변수로 14을 입력
 		if (isPressed(KeyCode.RIGHT) && player.getTranslateX() + 20 < level.levelWidth) { 
-			movePlayerX(12);	
+			movePlayerX(13);	
 		}
 		// esc버튼으로 재시작
 		if (isPressed(KeyCode.ESCAPE)) {
@@ -146,8 +146,8 @@ public class JAVADOT_Controller {
 		}
 		if (isPressed(KeyCode.TAB)) {
 			if(player.getTranslateX() > 1) {
-				player.setTranslateX(21000);
-				player.setTranslateY(100);
+				player.setTranslateX(23401);
+				player.setTranslateY(650);
 //				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()+17000);
 //				level.blockContainer.setTranslateY(level.blockContainer.getTranslateY());
 			}
@@ -201,7 +201,7 @@ public class JAVADOT_Controller {
 						player.setTranslateY(600); 
 						jumpData();
 					
-					}else if (player.getTranslateX() > 14230 && player.getTranslateX() < 18080) { // 4번맵 내에서 충돌시 5번맵으로 이동
+					}else if (player.getTranslateX() > 14030 && player.getTranslateX() < 18080) { // 4번맵 내에서 충돌시 5번맵으로 이동
 						level.blockContainer.setTranslateX(18900); //카메라 위치 지정
 						level.blockContainer.setTranslateY(0);
 						
@@ -211,14 +211,14 @@ public class JAVADOT_Controller {
 						player.setTranslateY(600); 
 						jumpData();
 						
-					}else if (player.getTranslateX() > 18760 && player.getTranslateX() < 22610) { // 5번맵 내에서 충돌시 6번맵으로 이동
+					}else if (player.getTranslateX() > 18700 && player.getTranslateX() < 22610) { // 5번맵 내에서 충돌시 6번맵으로 이동
 						level.blockContainer.setTranslateX(23450); //카메라 위치 지정
 						level.blockContainer.setTranslateY(0);
 						
 						System.out.println(player.getTranslateX()+" 5번도어");//임시저장코드
 						
-						player.setTranslateX(23450); // 6번맵 생성위치
-						player.setTranslateY(600); 
+						player.setTranslateX(23320); // 6번맵 생성위치
+						player.setTranslateY(680); 
 						jumpData();
 						
 					}else if (player.getTranslateX() > 23300 && player.getTranslateX() < 27140) { // 6번맵 내에서 충돌시 7번맵으로 이동
