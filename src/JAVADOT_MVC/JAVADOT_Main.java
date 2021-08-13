@@ -1,6 +1,7 @@
 package JAVADOT_MVC;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -9,7 +10,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -44,15 +47,19 @@ public class JAVADOT_Main extends Application {
 	}
 	
 	// BGM 출력
-//		public void startMusic() {
-//			Media h = new Media(Paths.get("/Users/coqoa/eclipse-workspace/DOTRESS_Ex1/src/music/BGM.mp3").toUri().toString());
-//			MediaPlayer introMusicPlayer = new MediaPlayer(h);
+		public void startMusic() {
+//			Media bgm = new Media(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/javadotBGM.mp3").toUri().toString());
+//			MediaPlayer introMusicPlayer = new MediaPlayer(bgm);
 //				introMusicPlayer.play();
-//			}
-	//	
+			AudioClip bgm = new AudioClip(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/javadotBGM.mp3").toUri().toString());
+			bgm.play();
+		}
+		
 	
 	@Override
 	public void start(Stage stage) throws IOException {
+
+		startMusic();
 		
 		root = FXMLLoader.load(getClass().getResource("view/introPage.fxml")); //컨테이너에 FXML파일 등록
 		Scene scene = new Scene(root);
