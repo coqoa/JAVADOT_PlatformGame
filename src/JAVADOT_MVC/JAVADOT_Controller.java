@@ -145,7 +145,7 @@ public class JAVADOT_Controller {
 	// AnimationTimer로 매번 업데이트하는 메서드
 	public void sceneUpdate() {
 
-		if(player.getTranslateY() > 1000) {
+		if(player.getTranslateY() > 1001) {
 			restartGame();
 		}
 		
