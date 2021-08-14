@@ -145,6 +145,10 @@ public class JAVADOT_Controller {
 	// AnimationTimer로 매번 업데이트하는 메서드
 	public void sceneUpdate() {
 
+		if(player.getTranslateY() > 1000) {
+			restartGame();
+		}
+		
 		// LEFT키를 누르고 player객체의 x값이 0보다 크거나 같다면 movePlayerX의 매개변수로 -14을 입력
 		if (isPressed(KeyCode.LEFT) && player.getTranslateX() > 0) {
 			movePlayerX(-14);
@@ -172,7 +176,7 @@ public class JAVADOT_Controller {
 		}
 		if (isPressed(KeyCode.TAB)) {
 			if (player.getTranslateX() > 1) {
-				player.setTranslateX(3880);
+				player.setTranslateX(21710);
 				player.setTranslateY(0);
 //				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()+17000);
 //				level.blockContainer.setTranslateY(level.blockContainer.getTranslateY());
@@ -183,59 +187,45 @@ public class JAVADOT_Controller {
 				System.exit(0);
 			}
 		}
-		if (isPressed(KeyCode.F1)) { // stage이동
-			if (player.getTranslateX() > -10) {
-				level.blockContainer.setTranslateX(1320);
-				player.setTranslateX(1280);
-				player.setTranslateY(600);
-				jumpData();
-			}
-		}
 
 		if (isPressed(KeyCode.F2)) { // stage이동
 			if (player.getTranslateX() > -10) {
-				level.blockContainer.setTranslateX(5300);
-				player.setTranslateX(5850);
+				player.setTranslateX(4575);
 				player.setTranslateY(600);
 				jumpData();
 			}
 		}
 		if (isPressed(KeyCode.F3)) { // 3stage이동
 			if (player.getTranslateX() > -10) {
-				level.blockContainer.setTranslateX(10400);
-				player.setTranslateX(10350);
+				player.setTranslateX(9070);
 				player.setTranslateY(600);
 				jumpData();
 			}
 		}
 		if (isPressed(KeyCode.F4)) { // 4stage이동
 			if (player.getTranslateX() > -10) {
-				level.blockContainer.setTranslateX(15000);
-				player.setTranslateX(14850);
+				player.setTranslateX(13570);
 				player.setTranslateY(600);
 				jumpData();
 			}
 		}
 		if (isPressed(KeyCode.F5)) { // 5stage이동
 			if (player.getTranslateX() > -10) {
-				level.blockContainer.setTranslateX(20000);
-				player.setTranslateX(20000);
-				player.setTranslateY(650);
+				player.setTranslateX(18720);
+				player.setTranslateY(600);
 				jumpData();
 			}
 		}
 		if (isPressed(KeyCode.F6)) { // 종료단축키
 			if (player.getTranslateX() > -10) {
-				level.blockContainer.setTranslateX(24500);
-				player.setTranslateX(24500);
+				player.setTranslateX(23220);
 				player.setTranslateY(600);
 				jumpData();
 			}
 		}
 		if (isPressed(KeyCode.F7)) { //종료단축키
 			if (player.getTranslateX() > -10) {
-				level.blockContainer.setTranslateX(29060);
-				player.setTranslateX(29060);
+				player.setTranslateX(27780);
 				player.setTranslateY(600);
 				jumpData();
 			}
@@ -375,12 +365,12 @@ public class JAVADOT_Controller {
 		}
 		for (Node moveRightBlock : level.moveRightBlocks) {
 			if (player.getBoundsInParent().intersects(moveRightBlock.getBoundsInParent())) {
-				player.setTranslateX(player.getTranslateX() + 3);
+				player.setTranslateX(player.getTranslateX() + 4);
 			}
 		}
 		for (Node moveLeftBlock : level.moveLeftBlocks) {
 			if (player.getBoundsInParent().intersects(moveLeftBlock.getBoundsInParent())) {
-				player.setTranslateX(player.getTranslateX() - 3);
+				player.setTranslateX(player.getTranslateX() - 4);
 			}
 		}
 		for (Node darkCloud : level.darkClouds) {
@@ -393,6 +383,11 @@ public class JAVADOT_Controller {
 			if (player.getBoundsInParent().intersects(lightCloud.getBoundsInParent())) {
 				player.setTranslateY(player.getTranslateY() - 3);
 					canJump = true;
+			}
+		}
+		for (Node air : level.airs) {
+			if (player.getBoundsInParent().intersects(air.getBoundsInParent())) {
+				player.setTranslateY(player.getTranslateY() - 2);
 			}
 		}
 		for (Node thunder : level.thunders) {
@@ -472,7 +467,7 @@ public class JAVADOT_Controller {
 							if (player.getTranslateY() + 10 < slipBlock.getTranslateY()) {
 								player.setTranslateY(player.getTranslateY() - 10);
 							} else {
-								player.setTranslateX(player.getTranslateX() - 1);// 벽에 안달라붙고 미끄러지게 하는코드
+								player.setTranslateX(player.getTranslateX() - 4);// 벽에 안달라붙고 미끄러지게 하는코드
 							}
 							return;
 						}
@@ -483,7 +478,7 @@ public class JAVADOT_Controller {
 							if (player.getTranslateY() + 10 < slipBlock.getTranslateY()) {
 								player.setTranslateY(player.getTranslateY() - 10);
 							} else {
-								player.setTranslateX(player.getTranslateX() + 1);// 벽에 안달라붙고 미끄러지게 하는코드
+								player.setTranslateX(player.getTranslateX() + 4);// 벽에 안달라붙고 미끄러지게 하는코드
 							}
 							return;
 						}
@@ -876,6 +871,7 @@ class LevelData { // 객체생성관련 코드모음 (player, block, energy, doo
 	public ArrayList<Node> gasForms = new ArrayList<Node>();
 	public ArrayList<Node> gasFormx2s = new ArrayList<Node>();
 	public ArrayList<Node> sandBlocks = new ArrayList<Node>();
+	public ArrayList<Node> airs = new ArrayList<Node>();
 
 	public ArrayList<Node> darkClouds = new ArrayList<Node>();
 	public ArrayList<Node> lightClouds = new ArrayList<Node>();
@@ -965,6 +961,10 @@ class LevelData { // 객체생성관련 코드모음 (player, block, energy, doo
 					case 'c':
 						Node lightCloud = createObject(j * 10, i * 10, 10, 10, Color.PALETURQUOISE);
 						lightClouds.add(lightCloud);
+						break;
+					case 'e':
+						Node air = createObject(j * 10, i * 10, 10, 10, Color.LIGHTGOLDENRODYELLOW);
+						airs.add(air);
 						break;
 					case 'T':
 						Node thunder = createObject(j * 10, i * 10, 10, 10, Color.YELLOW);
