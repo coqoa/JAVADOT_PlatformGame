@@ -37,6 +37,7 @@ public class JAVADOT_Controller {
 	public HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
 	public Point2D playerVelocity = new Point2D(0, 0);
 	public Rectangle bg;
+	RotateTransition rotate = new RotateTransition();
 
 	// 클래스 참조 변수
 	LevelData level = new LevelData(); // LevelData클래스 사용하기 위한 level객체 생성
@@ -87,7 +88,7 @@ public class JAVADOT_Controller {
 //					player.setEffect(setsepia);
 
 					// 로테이션사용예제
-					RotateTransition rotate = new RotateTransition();
+//					RotateTransition rotate = new RotateTransition();
 					rotate.setAxis(Rotate.Z_AXIS);
 					rotate.setByAngle(180);
 					rotate.setCycleCount(1);
@@ -176,7 +177,7 @@ public class JAVADOT_Controller {
 		}
 		if (isPressed(KeyCode.TAB)) {
 			if (player.getTranslateX() > 1) {
-				player.setTranslateX(21710);
+				player.setTranslateX(21726);
 				player.setTranslateY(0);
 //				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()+17000);
 //				level.blockContainer.setTranslateY(level.blockContainer.getTranslateY());
@@ -581,7 +582,8 @@ public class JAVADOT_Controller {
 						// player의 바닥면과 block의 윗면이 충돌하면
 						if (player.getTranslateY() + 20 == block.getTranslateY()) {
 							// player객체의 y값을 -1해주고 점프버튼이 작동하도록 해줌
-							player.setTranslateY(player.getTranslateY() - 5);
+//							player.setTranslateY(player.getTranslateY() - 5);
+							player.setTranslateY(player.getTranslateY() - 1); //돌아가서 맵에 박히는 문제 발생시 rotat값 변경해보기 (rotate.setByAngle)
 							canJump = true;
 							return;
 						}
@@ -591,6 +593,7 @@ public class JAVADOT_Controller {
 							// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게
 							playerVelocity = playerVelocity.add(0, -playerVelocity.getY() + 2);
 							// 윗벽에 붙었을때 점프버튼 작동x
+							System.out.println(rotate.getByAngle());
 							canJump = false;
 							return;
 						}
@@ -605,7 +608,8 @@ public class JAVADOT_Controller {
 						// player의 바닥변과 block의 윗면이 충돌하면
 						if (player.getTranslateY() + 20 == slipBlock.getTranslateY()) {
 							// player객체의 y값을 -1해주고 점프버튼이 작동하도록 해줌
-							player.setTranslateY(player.getTranslateY() - 5);
+//							player.setTranslateY(player.getTranslateY() - 5);
+							player.setTranslateY(player.getTranslateY() - 1);
 							canJump = true;
 							return;
 						}
@@ -963,7 +967,7 @@ class LevelData { // 객체생성관련 코드모음 (player, block, energy, doo
 						lightClouds.add(lightCloud);
 						break;
 					case 'e':
-						Node air = createObject(j * 10, i * 10, 10, 10, Color.LIGHTGOLDENRODYELLOW);
+						Node air = createObject(j * 10, i * 10, 10, 10, Color.POWDERBLUE);
 						airs.add(air);
 						break;
 					case 'T':
