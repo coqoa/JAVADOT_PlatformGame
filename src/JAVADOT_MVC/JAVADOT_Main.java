@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
@@ -48,9 +47,6 @@ public class JAVADOT_Main extends Application {
 	
 	// BGM 출력
 		public void startMusic() {
-//			Media bgm = new Media(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/javadotBGM.mp3").toUri().toString());
-//			MediaPlayer introMusicPlayer = new MediaPlayer(bgm);
-//				introMusicPlayer.play();
 			AudioClip bgm = new AudioClip(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/javadotBGM.mp3").toUri().toString());
 			bgm.play();
 		}
