@@ -102,6 +102,7 @@ public class JAVADOT_Controller {
 	}
 
 	public boolean canJump = true;
+	public boolean BGMPlay = true;
 
 	public void jumpPlayer() {
 
@@ -180,54 +181,104 @@ public class JAVADOT_Controller {
 		//player 이동
 		if (isPressed(KeyCode.TAB)) {
 			if (player.getTranslateX() > 1) {
-				player.setTranslateX(21700);
+				player.setTranslateX(14250);
 				player.setTranslateY(0);
 			}
 		}
-		// 프로그램 종료
-		if (isPressed(KeyCode.X)) { 
-			if (player.getTranslateX() > -1) {
-				System.exit(0);
+		
+		// BGM끄고켜기 종료
+		if (isPressed(KeyCode.P)) { 
+			if (BGMPlay) {
+				mainClass.bgm.stop();
+				BGMPlay = false;
+			}
+		}
+		if (isPressed(KeyCode.O)) { 
+			if (BGMPlay==false) {
+				mainClass.bgm.play();
+				BGMPlay = true;
 			}
 		}
 //
 	// Stage이동단축키
 		
-		if (isPressed(KeyCode.F2)) { // 2 Stage
+		if (isPressed(KeyCode.DIGIT2)) { // 2 Stage
 			if (player.getTranslateX() > -10) {
 				player.setTranslateX(4575);
 				player.setTranslateY(600);
 				jumpData();
 			}
-		} else if (isPressed(KeyCode.F3)) {  // 3 Stage
+		} else if (isPressed(KeyCode.DIGIT3)) {  // 3 Stage
 			if (player.getTranslateX() > -10) {
 				player.setTranslateX(9070);
 				player.setTranslateY(600);
 				jumpData();
 			}
-		} else if (isPressed(KeyCode.F4)) {  // 4 Stage
+		} else if (isPressed(KeyCode.DIGIT4)) {  // 4 Stage
 			if (player.getTranslateX() > -10) {
 				player.setTranslateX(13570);
 				player.setTranslateY(600);
 				jumpData();
 			}
-		} else if (isPressed(KeyCode.F5)) {  // 5 Stage
+		} else if (isPressed(KeyCode.DIGIT5)) {  // 5 Stage
 			if (player.getTranslateX() > -10) {
 				player.setTranslateX(18750);
 				player.setTranslateY(600);
 				jumpData();
 			}
-		} else if (isPressed(KeyCode.F6)) {  // 6 Stage
+		} else if (isPressed(KeyCode.DIGIT6)) {  // 6 Stage
 			if (player.getTranslateX() > -10) {
 				player.setTranslateX(22500);
 				player.setTranslateY(600);
 				jumpData();
 			}
-		} else if (isPressed(KeyCode.F7)) {  // 7 Stage
+		} else if (isPressed(KeyCode.DIGIT7)) {  // 7 Stage
 			if (player.getTranslateX() > -10) {
 				player.setTranslateX(27050);
 				player.setTranslateY(600);
 				jumpData();
+			}
+		} else if (isPressed(KeyCode.DIGIT8)) {  // 임시저장(클리어화면)
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(31750);
+				level.blockContainer.setTranslateX(-31104);
+				player.setTranslateY(0);
+			}
+		} else if (isPressed(KeyCode.DIGIT9)) {  // 임시저장 (시작화면)
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(33050);
+				level.blockContainer.setTranslateX(-32404);
+				player.setTranslateY(0);
+			}
+		} else if (isPressed(KeyCode.F1)) {  // 
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(3010);
+				player.setTranslateY(550);
+			}
+		} else if (isPressed(KeyCode.F3)) {  // 
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(9760);
+				player.setTranslateY(100);
+			}
+		} else if (isPressed(KeyCode.F4)) {  // 
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(16600);
+				player.setTranslateY(350);
+			}
+		} else if (isPressed(KeyCode.F5)) {  // 
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(21714);
+				player.setTranslateY(50);
+			}
+		} else if (isPressed(KeyCode.F6)) {  // 
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(24500);
+				player.setTranslateY(0);
+			}
+		} else if (isPressed(KeyCode.F7)) {  // 
+			if (player.getTranslateX() > -10) {
+				player.setTranslateX(29800);
+				player.setTranslateY(300);
 			}
 		}
 
@@ -277,7 +328,11 @@ public class JAVADOT_Controller {
 	// 7번맵에서 player객체와 충돌시 클리어화면 출력하도록 구현예정
 		for (Node sunR : level.sunRs) { 
 			if (player.getBoundsInParent().intersects(sunR.getBoundsInParent())) {
-				restartGame(); // 어떻게 구현할까?
+				if (player.getTranslateX() > -10) {
+					player.setTranslateX(31750);
+					level.blockContainer.setTranslateX(-31104);
+					player.setTranslateY(0);
+				}
 			}
 		}
 			
@@ -347,25 +402,32 @@ public class JAVADOT_Controller {
 	// player객체를 좌우로 움직이게하는 Block(무빙워크)
 		for (Node moveRightBlock : level.moveRightBlocks) {
 			if (player.getBoundsInParent().intersects(moveRightBlock.getBoundsInParent())) {
-				player.setTranslateX(player.getTranslateX() + 4);
+				player.setTranslateX(player.getTranslateX() + 2);
 			}
 		}
 		for (Node moveLeftBlock : level.moveLeftBlocks) {
 			if (player.getBoundsInParent().intersects(moveLeftBlock.getBoundsInParent())) {
-				player.setTranslateX(player.getTranslateX() - 4);
+				player.setTranslateX(player.getTranslateX() - 3);
 			}
 		}
 	//player객체의 낙하시간을 느리게하는 Block
 		for (Node darkCloud : level.darkClouds) {
 			if (player.getBoundsInParent().intersects(darkCloud.getBoundsInParent())) {
-				player.setTranslateY(player.getTranslateY() - 3);
+				player.setTranslateY(player.getTranslateY() - 5); // 구름위에서 player객체가 벌벌떨게 구현
 				canJump = true;
+				
 			}
 		}
 		for (Node lightCloud : level.lightClouds) {
 			if (player.getBoundsInParent().intersects(lightCloud.getBoundsInParent())) {
-				player.setTranslateY(player.getTranslateY() - 3);
+				player.setTranslateY(player.getTranslateY() - 5); // 구름위에서 player객체가 벌벌떨게 구현
 					canJump = true;
+			}
+		}
+		for (Node lineCloud : level.lineClouds) {
+			if (player.getBoundsInParent().intersects(lineCloud.getBoundsInParent())) {
+				player.setTranslateY(player.getTranslateY() - 2);
+				canJump = true;
 			}
 		}
 		for (Node air : level.airs) {
@@ -401,7 +463,7 @@ public class JAVADOT_Controller {
 	}
 
 	public void movePlayerX(int value) {
-		Bloom changeColor = new Bloom();
+//		Bloom changeColor = new Bloom();
 
 		// LEFT=false, RIGHT=true
 		boolean movingRight = value > 0;
@@ -606,6 +668,30 @@ public class JAVADOT_Controller {
 					} else {
 						// 점프시 윗벽이 막혀있으면 더 안올라가짐
 						if (player.getTranslateY() == slipBlock.getTranslateY() + 10) {
+							// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게
+							playerVelocity = playerVelocity.add(0, -playerVelocity.getY() + 2);
+							// 윗벽에 붙었을때 점프버튼 작동x
+							canJump = false;
+							return;
+						}
+					}
+				}
+			}
+			for (Node layout : level.layouts) {
+				// player와 slipBlock비교
+				if (player.getBoundsInParent().intersects(layout.getBoundsInParent())) {
+					if (movingDown) {
+						// player의 바닥변과 slipBlock의 윗면이 충돌하면
+						if (player.getTranslateY() + 20 == layout.getTranslateY()) {
+							// player객체의 y값을 -1해주고 점프버튼이 작동하도록 해줌
+//							player.setTranslateY(player.getTranslateY() - 5);
+							player.setTranslateY(player.getTranslateY() - 1);
+							canJump = true;
+							return;
+						}
+					} else {
+						// 점프시 윗벽이 막혀있으면 더 안올라가짐
+						if (player.getTranslateY() == layout.getTranslateY() + 10) {
 							// 윗벽에 막힌 순간 playerVelocity변수의 Y값을 구해서 그 값을 다시 돌려주도록 구현 -> 벽에서 바로 떨어질 수 있게
 							playerVelocity = playerVelocity.add(0, -playerVelocity.getY() + 2);
 							// 윗벽에 붙었을때 점프버튼 작동x
@@ -832,6 +918,7 @@ class LevelData { // 객체생성관련 코드모음 (player, block, energy, doo
 	public ArrayList<Node> moveLeftBlocks = new ArrayList<Node>();
 	public ArrayList<Node> darkClouds = new ArrayList<Node>();
 	public ArrayList<Node> lightClouds = new ArrayList<Node>();
+	public ArrayList<Node> lineClouds = new ArrayList<Node>();
 	public ArrayList<Node> thunders = new ArrayList<Node>();
 	public ArrayList<Node> airs = new ArrayList<Node>();
 	public ArrayList<Node> sandBlocks = new ArrayList<Node>();
@@ -868,7 +955,7 @@ class LevelData { // 객체생성관련 코드모음 (player, block, energy, doo
 						blocks.add(block);
 						break;
 					case '2':
-						Node energy = createObject(j * 10, i * 10, 6, 9, Color.GOLD);
+						Node energy = createObject(j * 10, i * 10, 6, 9, Color.DARKVIOLET);
 						energys.add(energy);
 						break;
 					case '3':
@@ -927,6 +1014,11 @@ class LevelData { // 객체생성관련 코드모음 (player, block, energy, doo
 					case 'T':
 						Node thunder = createObject(j * 10, i * 10, 10, 10, Color.YELLOW);
 						thunders.add(thunder);
+						break;
+						
+					case 'E':
+						Node lineCloud = createObject(j * 10, i * 10, 10, 10, Color.DODGERBLUE);
+						lineClouds.add(lineCloud);
 						break;
 					case 'e':
 						Node air = createObject(j * 10, i * 10, 10, 10, Color.POWDERBLUE);
@@ -997,7 +1089,7 @@ class LevelData { // 객체생성관련 코드모음 (player, block, energy, doo
 						bgObject.add(navajowhite);
 						break;
 					case 'u':
-						Node THISTLE = createObject(j * 10, i * 10, 10, 10, Color.THISTLE);
+						Node THISTLE = createObject(j * 10, i * 10, 10, 10, Color.ORCHID);
 						bgObject.add(THISTLE);
 						break;
 					case 'O':
