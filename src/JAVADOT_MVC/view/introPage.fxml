@@ -5,11 +5,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="JAVADOT_MVC.JAVADOT_Controller">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/" fx:controller="JAVADOT_MVC.JAVADOT_Controller">
    <children>
       <ImageView fitHeight="803.0" fitWidth="1280.0" layoutX="-111.0" pickOnBounds="true" preserveRatio="true" scaleX="1.2">
          <image>
-            <Image url="@../../../../../Downloads/자바닷플랫포머%20소스파일/시작화면%20복사본.png" />
+            <Image url="@../source/introPage.png" />
          </image></ImageView>
       <Button layoutX="601.0" layoutY="351.0" mnemonicParsing="false" onAction="#gameStartButton" opacity="0.0" text="Button" />
    </children>

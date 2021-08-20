@@ -48,7 +48,6 @@ public class JAVADOT_Main extends Application {
 	
 	// BGM 출력
 		public void startMusic() {
-//			AudioClip bgm = new AudioClip(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/javadotBGM.mp3").toUri().toString());
 			bgm.play();
 		}
 		
