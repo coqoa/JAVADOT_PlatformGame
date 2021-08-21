@@ -118,7 +118,8 @@ public class JAVADOT_Controller {
 		// createObject (blockContainer)
 		player = level.createObject(20, 600, 20, 20, Color.DARKVIOLET);
 
-		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
+//		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
+		mainContainer.getChildren().addAll(bg, level.blockContainer);
 		return mainContainer;
 	}
 
@@ -224,6 +225,16 @@ public class JAVADOT_Controller {
 				System.out.println("player X 위치 : " + player.getTranslateX());
 				System.out.println("player Y 위치 : " + player.getTranslateY());
 				System.out.println("levelBlock위치 :" + level.blockContainer.getTranslateX());
+			}
+		}
+		if (isPressed(KeyCode.L)) {
+			if (player.getTranslateX() > 1) {
+				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()-10);
+			}
+		}
+		if (isPressed(KeyCode.K)) {
+			if (player.getTranslateX() > 1) {
+				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()+10);
 			}
 		}
 		//player 이동
