@@ -1,211 +1,263 @@
-# JAVADOT-platformer-game
-자바를 이용해서 만든 로그라이크 형식의 플랫폼게임입니다.  
-https://coqoa.tistory.com/39?category=952814
-블로그에 주기적으로 업데이트합니다.
+ ---
+ # JAVADOT
 
-## 210727 
->재실행을 반복하면 느려지는 현상을 해결하기 위해서  
->생성되는 객체에 null값을 대입해서 JVM의 GC가 관리하도록 구현해봤음.  
->별로 효과는 없는듯함..  
+ ### 제작동기 및 목표
 
-## 210728
->mainClass.stop()은 작동하지 않는 메서드였다,  
->stage.close()는 stage.hide()와 같은 역할을 하는 메서드이고 이는 내가 원하는 기능이 아니였다.  
->mainClass.start()를 실행하면 scene은 지속적으로 교체가 되지만 stage는 그대로였다.  
->기존의 scene은 정리되지않고 계속 새로운 scene을 선언하고 사용하니까 메모리가 중복되서 렉이걸리는 원인이 된거라고 판단한다.   
+처음 배우는 언어로 `자바`를 선택했고 자바의 GUI인 `javafx`로 게임을 만들어 보고 싶었습니다  
+javafx로 게임을 만들기 위해 참고할 사이트는 비교적 제한적이었고 이 부분이 오히려 짧은 시간에 더 많이 배울 수 있는 밑거름이 됐다고 생각합니다   
+저는 무엇이든  첫단추를 꿰는게 가장 중요하다고 생각합니다.   
+목표는 `무조건 내가 만족할 수준으로 배포하기` 입니다.  
 
-## 210802
->esc버튼을 누르거나 화면밑으로 낙하하면 첫시작위치로 player객체를 옮기고 energy객체도 원상복구하는식으로 쉽게 해결했다.  
+---
 
-## 210804
+#### 제작기간 
+2021.06.24~ 08.23
+
+---
+<br/>
+<br/>
+[시연영상]
+<br/>
+<br/>
+
+---
+ 
+
+## JAVADOT은 도트 플랫포머 게임입니다
+
+### 게임의 목표  
+```
+
+Player는 해저에서부터 시작해서 해수면, 육지, 비바람과 번개가 몰아치는 하늘을 건너 태양에 도달해야 합니다.
+
+```  
+
+### 게임의 특징 : 
+```
+1. 점프횟수에 제한이 있다
+2. 땅을 밟으면 점프를 1회 할 수 있다
+3. energy를 먹으면 점프 횟수 1 추가한다
+4. 각종 상호작용블럭에 의해 죽을 수 있다.  
+5. 죽으면 첫스테이지부터 다시 시작한다
+```
+
+ ### 키설명
+ |행동|키|
+ |:--:|:--:| 
+ |이동|  `<-`,`->`|
+ |점프|  `spacebar`|
+ |재시작|   `esc`|
+ |볼륨|on = `F11`, off=`F12`| 
+
+ ```- 시연을 위해 숫자키 2 ~ 8, F1 ~ F7 키를 통해 순간이동할 수 있게 구현해놨습니다 ``` 
+
+---
+
+## Stage설명 및 상호작용하는 블럭 설명
+```
+JAVADOT은 1 Stage에서 7 Stage까지 존재합니다.  
+Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를 클리어하면 됩니다.  
+```
+
+### 시작페이지
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327825-129d7693-ec04-4355-a57d-f76fcabbd5e4.gif"/>
+  ➥ 시작페이지입니다.
+  <br/><br/><br/>
   
-![스크린샷 2021-08-04 오전 12 46 29](https://user-images.githubusercontent.com/81023768/128052276-9a8da3cf-3d65-4263-85b6-ea3886b44800.png)
->화면 이동시 프레임드랍현상처럼 뚝뚝 끊기던 문제 해결
->화면은 player객체를 중심으로 같이 움직이기 때문에 단순하게 player객체의 프레임당 움직임을 짧게 구현하면 부드러운 화면이 될 것 같았다
->기존에는 movingRight ? 1 : 1이었는데 1을 0.5로 바꾸고 해결했음
+### 기본적인 상호작용
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327903-797d1d00-dae8-4be5-8fc5-7f18bec48001.gif"/>
+  ➥ energy블럭입니다. 먹으면 점프횟수가 늘어납니다.
+  <br/><br/><br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327923-81fa6e99-3640-42a6-ab2c-4a76f0192097.gif"/>
+  ➥ door블럭입니다. (접촉시 다음스테이지로 넘어갑니다)
+  <br/><br/><br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327933-b0bde2b6-6539-4082-aa58-51e2f8b13f25.gif"/>
+  ➥ 화면 아래로 벗어나면 1 Stage부터 재시작합니다. 
+  <br/><br/><br/>
 
-<img width="816" alt="스크린샷 2021-08-04 오전 1 59 48" src="https://user-images.githubusercontent.com/81023768/128056525-df3741f9-4e6c-49be-9e99-0d09aa7bb21f.png">
+### 1 Stage : 해저
+  
+  <br/>
+  <details>
+    <summary> 1Stage 코드 및 사진을 보려면 클릭하세요  🧐 </summary>
+    <div markdown="1">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324285-99261f1e-b075-43fc-871f-bba4053d6f2c.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324148-047b1752-29ca-4f61-a7d4-61b6c29d4f71.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324149-b19199f0-f3e9-4f82-8b58-a5ee8cc5de3d.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324152-1d328b77-10b5-41b3-9b0c-bdfc447217d5.png"/>
+    </div>
+  </details>
+  <br/>
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130328181-156452ec-c682-4d4a-b277-1b18ba7fbf7d.gif"/>
+  ➥ 해저를 표현하기 위해 바닥은 모래색으로 표현했습니다.    
+  <br/><br/><br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326291-f77cc2ff-9adb-4d34-a17d-42ac1c44cc78.gif"/>
+  ➥ 수중에서 헤엄치는 느낌을 주기위해 닿으면 점프를 할 수 있는 블럭을 곳곳에 배치했습니다    
+  <br/><br/><br/>
 
->점프할때 윗벽에 막혔을때 부자연스럽던 부분 해결
->2번째 줄 코드를 추가해서 충돌시 바로 떨어지도록 구현했음
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326249-311c6b6d-05e0-46b3-87f4-d98442e395b9.gif"/>
+  ➥ 맵의 디자인 요소로 하얀색 블럭으로 공기방울을 표현했습니다 2가지 속도를 줘서 좀 더 사실적으로 표현할 수 있었습니다.
 
-진짜 거의 다 완성한 것 같다.
-몇주간 너무 고생했는데 해결해서 너무너무너무너무 행복하다 ㅋㅋㅋㅋ
+  ➥ 해초류를 그렸고 밟을 수 있는 해초류와 밟지 못하는 해초류는 색으로 구분했습니다.   
+  <br/><br/><br/>
 
-## 210810
+### 2 Stage : 수중
 
-#### 구현한 것
-1. 개발이나 시연할 때 편의성을 위해 F2~F7버튼으로 레벨 넘나드는것을 구현했음
+  <br/>
+  <details>
+    <summary> 2Stage 코드 및 사진을 보려면 클릭하세요 🧐 </summary>
+    <div markdown="2">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324423-995b9d90-df06-4071-b834-d104619f731a.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324425-648b5eab-7ef4-4349-9daf-2eee4f510cd0.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324427-470ecafb-d9c6-4e0e-a114-2d9ec82207b8.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324429-cf944b55-e720-4857-8f53-3d15344c14d2.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324430-e354d629-a861-4e68-bf82-612712606807.png"/>
+    </div>
+  </details>
+  <br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326839-847f0cb0-a456-49f4-aa55-9459a5ecfa21.gif"/>
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326846-b220b105-81ed-436a-9181-42ac0d9dcb11.gif"/>
+  ➥ 해초의 줄기를 표현하기 위해 초록색 객체를 사용했고 이 객체는 밟고 다니거나 옆에 붙을 수 있습니다 (붙었을 때는 투명해지도록 구현을 해 뒀습니다)  
+  <br/><br/><br/>
 
--  (아직은 5레벨까지만 맵을 제작해서 5레벨까지만 사용)
--  
-![스크린샷 2021-08-09 오후 11 33 49](https://user-images.githubusercontent.com/81023768/128727977-376f72e0-2e47-4c36-b825-2a23fe53f82e.png)
+### 3 Stage : 해수면
 
-2. player객체와 상호작용하는 각종 블럭들 구현
+  <br/>
+  <details>
+    <summary>  3Stage 코드 및 사진을 보려면 클릭하세요 🧐 </summary>
+    <div markdown="3">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324475-1fe8bc3f-a00f-41f7-ad3a-09dee1945127.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324478-52892ad3-a78b-425c-8839-319bd4170738.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324479-914c1400-c553-4c11-b6e6-11e7624947c2.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324480-68ea2067-151d-4687-a6ab-49a163b9725f.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324481-6f0bc674-7060-4bf5-83e3-e0c7a15ae1a4.png"/>
+    </div>
+  </details>
+  <br/>
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327591-104a4c3e-6a65-4d5b-979b-662638159b3c.gif"/>
+  ➥ 벽에 붙지않는 블럭입니다
+  <br/><br/><br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327012-0ff28aee-1ee1-4180-9973-e48e5517267c.gif" />
+  ➥ 닿으면 1 Stage부터 재시작하는 하얀색 블럭입니다.  
+  <br/><br/><br/>
 
-- 각종 메서드들에 연결해서 상호작용 구현
-- 
-![스크린샷 2021-08-09 오후 11 35 50](https://user-images.githubusercontent.com/81023768/128728065-26f8262a-5e6e-4fa4-bff8-2a139568dd50.png)
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327014-bd339ed8-77a9-4196-a951-d21c3d1044af.gif"/>
+  ➥ 점프해서 밟으면 높이 뛰는 발판입니다
+  <br/><br/><br/>
 
-3. 디자인을 위한 블럭 구현
+### 4 Stage : 육지
 
-- (상호작용이 필요없는 순수 디잔인을 위한 블럭들)
-- 
-![스크린샷 2021-08-09 오후 11 36 59](https://user-images.githubusercontent.com/81023768/128728161-68d5b39e-ac59-4314-b6c0-eb8d6117add3.png)
+  <br/>
+  <details>
+    <summary>4Stage 코드 및 사진을 보려면 클릭하세요 🧐 </summary>
+    <div markdown="4">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324545-8b84a6a6-0f17-41cd-99fd-a68c5b5e5cd9.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324546-06072b64-9a00-4e82-8de8-8be68509922e.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324548-134d419e-4158-4f18-8922-ed2807a9f35e.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324550-9cd4ad87-2f0b-4113-8169-80f9e447c284.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324551-eb72e80d-d1cd-4f26-bbce-23fda2af0216.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324552-f9b3a443-d1c9-4458-a7ae-5e0d51d8b171.png"/>
+    </div>
+  </details>
+  <br/>
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327535-c0fbc530-cd27-4da4-b8bc-c347e192443f.gif"/>
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327530-872bd243-c59f-4472-9480-e5d7edf7a5bc.gif"/>
+  ➥ 짚라인을 표현하기 위해 만든 블럭으로 Player를 좌,우로 이동시켜줍니다
+  <br/><br/><br/>
 
-#### 아쉬운 점
+### 5 Stage : 하늘과 비바람
 
-  >깃헙이나 포스팅에 좀 더 공을 들였어야 하는데 너무 아쉽다.  
-  당시에는 조금 귀찮고 귀찮고 귀찮겠지만..  
-  이 코드를 통해 나를 표현한다고 생각하고 좀 더 신중하고 깔끔하게 업로드했었으면.. 하는 아쉬움이 든다.  
-  >
-  >stage를 자유자재로 왔다 갔다 하는 것은 아주 간단한 기능인데 너무 안일하게 생각했다.  
-  진작에 구현했으면 개발 시간을 획기적으로 단축했을 것이다.  
-  개발뿐 아니라 시연까지 하려면 더욱 필요한 기능이고 가장 기초적인 기능이므로 앞으로는 시연이나 개발 편의성을 염두에 두고 시작해야겠다.  
-  >
-  >맵을 좀 더 순서를 정하고 만들었으면 두 번 일을 안 해도 됐을 것이다.  
-  앞으로는 모든 것을 대략적인 계획은 가진 상태에서 시작해야겠다.  
+  <br/>
+  <details>
+    <summary> 5Stage 코드 및 사진을 보려면 클릭하세요 🧐 </summary>
+    <div markdown="5">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324624-9722fffb-6c67-4bd7-a11a-96dc2c3be5cc.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324626-1a3d8113-2f16-453a-8da2-d4af9eb6974e.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324629-d590360f-a835-48b8-bb5f-b428d0d2b699.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324631-22e0cb9a-7f7c-4dee-a764-090391c5be26.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324632-905ced0d-424a-45d1-8ab0-6fd5c59c2bde.png"/>
+    </div>
+  </details>
+  <br/>
 
-#### 느낀 점
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327633-733ea9c1-b35f-4fb6-ad04-a372d95648f5.gif"/>
+  ➥ 먹구름은 아래에서도 통과할 수 있으며, Player가 두려워도 앞으로 나아가는 것을 표현하고자 덜덜 떨게 만들었습니다.  
+  <br/><br/><br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327643-7e7663a1-1313-4c2d-94c1-a0225e27f6a0.gif"/>
+  ➥ 비를 맞으면 1 Stage부터 재시작합니다.  
+  <br/><br/><br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327694-7fda4249-1831-4b97-ac73-933da51d7750.gif"/>
+  ➥ 공기저항을 표현하기 위해 만들어진 블럭입니다. (낙하속도가 줄어듭니다)
+  <br/><br/><br/>
 
-  >단순히 프로젝트를 만드는 게 아닌 좀 더 퀄리티 있고 좀 더 매력 있는 앱을 만들어야겠다고 느꼈다.  
-  이 프로젝트가 끝나면 또 배울게 산더미라 다시 코드를 들여다보기가 힘들 것이다.  
-  한 번 할 때 맘에 들 정도로 완벽하게 하고 넘어가야겠다.
-  >
-  >남는 것은 기록이고 남이 나를 판단하기 가장 쉬운 방법은 작업 결과를 보는 것이다.  
-  깃헙과 포스팅, 유튜브로 시연 영상까지 준비해서 누가 봐도 매력적인 게임을 만들고 깔끔하게 정리한 뒤 다음 프로젝트로 넘어가자.  
+### 6 Stage : 고난과 역경
 
- 
+  <br/>
+  <details>
+    <summary> 6Stage 코드 및 사진을 보려면 클릭하세요 🧐 </summary>
+    <div markdown="6">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324688-5b07b250-8e44-4563-9c5b-0e562d3402be.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324690-72510821-0472-4acd-a987-541d49282c9c.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324692-9712ae1c-49fb-4633-8cc4-e836b0ef898b.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324693-ca036280-0b16-4d97-a096-5e25ae63765c.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324696-66eb3e5e-2f7e-4471-b07c-e36078b4394c.png"/>
+    </div>
+  </details>
+  <br/>
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327720-ae40655d-10d1-4249-b858-d6044ae5f941.gif"/>
+  ➥ 위, 아래로 움직이는 블럭입니다. (아래에서 통과할 수 없습니다)
+  <br/><br/><br/>
 
-#### 앞으로의 목표
+### 7 Stage : 먹구름과 번개 그리고 태양.
 
-  - 효과음, effect, BGM - 1일
-  - mainPage를 thread로 관리해서 실행초기 렉 잡기 - 반나절
-  - 7번맵까지 제작 & 디자인-2일
-  - 최적화(성능, 편의성) -2일
-  - 종료페이지, 폰트 등 디테일한 작업 - 하루
-  - 깃허브, 블로그 포스팅 작업 -1주~
-  - 모두 합쳐서 2주안에 끝내기
+  <br/>
+  <details>
+    <summary> 7Stage 코드 및 사진을 보려면 클릭하세요 🧐 </summary>
+    <div markdown="7">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324726-be323306-de30-45e3-8496-12e0010da95b.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324728-b9d72e11-dfbe-4547-85c2-67c40fffbe0b.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324729-f41b19be-4ee4-4154-99a5-0c30a21db303.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324732-5b54c47b-19de-4a32-bfb0-8e02cfbd078c.png"/>
+    </div>
+  </details>
+  <br/>
 
-## 210813
-효과음, effect, BGM - 1일
-7번맵까지 제작 & 디자인-2일
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327753-48df59fd-9ed5-485d-aa3a-b10c358ec30e.gif"/>
+  ➥ 번개입니다. (맞으면 1 Stage부터 재시작합니다)
+  <br/><br/><br/>
 
-1. 효과음 : 점프할때
-2. effect : 점프할때, player객체와 block객체의 옆면이 붙을때
-3. BGM : 시작시 실행하도록 구현
-4. 맵 제작 : 컨셉을 설정하고 맵만들기 
-1스테이지(물속)~ 7스테이지(하늘)로 넘어가도록 구현하고 알맞는 디자인요소나 상호작용요소 넣기
-1스테이지 : 물속(바닥) - 모래바닥구현, 접촉시 player객체를 천천히 낙하해주도록하는 객체를 통해 헤엄치는듯한 느낌추가, 디자인요소로 공기방울, 해초추가
-2스테이지 : 물속(해수면과 바닥의 중간쯤) - 해초를 타고 넘어가도록 구현
-3스테이지 : 해수면 - 파도구현, 높은 점프를 할 수 있도록 도와주는 객체를 통해 다이빙하는 느낌추가, 
-4스테이지 : 육지 - 나무나 풀, 꽃 등을 디자인요소로 첨가 
-5스테이지 : 육지와 하늘 사이 - 
-6스테이지 : 육지와 하늘 사이 - 
-7스테이지 : 하늘 구름 - 상호작용하는 구름과 번개객체를 통해 하늘을 떠다니는듯한 느낌추가 엔딩은 태양으로 점프하도록 구현하기
-스테이지에 대한 설명은 조금씩 추가할 예정
-
-
-## 210816
-
-#### 구현한 것
-
-1. player객체와 상호작용하는 각종 블럭들 구현  
-![스크린샷 2021-08-15 오후 10 27 13](https://user-images.githubusercontent.com/81023768/129483820-3417d7e7-22a7-4aa2-9b64-a10dcc86f112.png)  
-![스크린샷 2021-08-15 오후 10 27 28](https://user-images.githubusercontent.com/81023768/129483824-93861445-b358-44db-aaec-f00bfb999948.png)  
-
-
-2. 디자인을 위한 블럭 구현  
-![스크린샷 2021-08-15 오후 10 27 46](https://user-images.githubusercontent.com/81023768/129483836-3ac93c0c-c12a-4a87-91ae-c5054a869558.png)  
-![스크린샷 2021-08-15 오후 10 27 54](https://user-images.githubusercontent.com/81023768/129483839-e0afd52b-85ac-4b0f-9376-c9584e53a32d.png)  
-
-
-3. Stage1~ Stage7 까지 맵 제작완료 (위의 블럭들을 이용해서 맵을 구성)  
-
->ObjectData.java파일을 switch문으로 읽어서 구현
-
-
-
-4. 최적화를 위해 불필요한 데이터 제거   
-
-ObjectData1파일내에서 사용자에게 보여지는 부분을 제외한 데이터들 제거  
-
-(ex. 화면밖의 0과 7로 표현된 블럭데이터, 맵과 맵 사이에 빈공간을 표현하던 0 블럭데이터)  
-
- 
-
-5. 개발이나 시연할 때 편의성을 위한 스테이지이동버튼 구현 (ESC, F2~F7 버튼)  
-
-![스크린샷 2021-08-15 오후 10 33 46](https://user-images.githubusercontent.com/81023768/129483853-483b401d-f5b3-4669-8cfc-ca6c50cf2476.png)  
-![스크린샷 2021-08-15 오후 10 34 14](https://user-images.githubusercontent.com/81023768/129483852-f3cca597-1ca9-4682-a445-73aec4af0209.png)  
-![스크린샷 2021-08-15 오후 10 34 59](https://user-images.githubusercontent.com/81023768/129483850-470f0bd3-6894-406c-b657-5859c00cde2d.png)  
-
-6. 각 스테이지에서 door와 충돌시 다음스테이지로 넘어가도록 구현  
-![스크린샷 2021-08-15 오후 10 38 36](https://user-images.githubusercontent.com/81023768/129483873-ddfc4954-4095-4984-b68f-53f9d4bf95c1.png)  
-
-
-7. BGM 구현  
->controller가 아닌 Main클래스에 적용  
-![스크린샷 2021-08-15 오후 10 39 28](https://user-images.githubusercontent.com/81023768/129483880-aed90bd2-0cb3-4d28-b2bc-f8fe00014b4d.png)  
-
-
-
-8. 효과음  
-
-Controller클래스내에 적용시킴  
-
-- jump할 때 효과음 적용  
-![스크린샷 2021-08-15 오후 10 40 31](https://user-images.githubusercontent.com/81023768/129483886-5e519cee-bf4f-4a81-a311-37e24230de5c.png)  
-
-
-
-- longJump객체와 닿으면 효과음 적용  
-![스크린샷 2021-08-15 오후 10 40 53](https://user-images.githubusercontent.com/81023768/129483890-42a2507d-7468-4388-982c-24526122dcd3.png)  
-
-
-
-
-
-9. effect구현   
-![스크린샷 2021-08-15 오후 10 43 19](https://user-images.githubusercontent.com/81023768/129483910-57e6bd04-5341-4c05-86bb-71f4741496d4.png)  
+  
+  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327761-21cfe992-2eba-447f-b49b-d6f42d347f11.gif"/>
+  ➥ 태양입니다. (태양에 들어가면 게임 클리어입니다)
+  <br/><br/><br/>
 
 
 
-10. mainPage메서드 멀티스레드관리  
+### Clear 
 
-#### 다음주 마무리계획
+  <br/>
+  <details>
+    <summary> clear 코드 및 사진을 보려면 클릭하세요 🧐 </summary>
+    <div markdown="8">       
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324753-47304492-84f8-4a0d-a6ae-948ef7b252c4.png"/>
+      <img width="45%" src="https://user-images.githubusercontent.com/81023768/130324751-609ffa0b-0e47-4e34-b065-28c65c4652ce.png"/>
+    </div>
+  </details>
+  <br/>
 
->1. 클리어화면만들기 - 0.5일(화)
->2. 에너지 객체 적절하게 배치 - 0.5일(화)
->3. 최적화 - 2일(수,목)
->4. 프로그램 로직설명서 반나절 - 1일(금)
->5. 유튜브 대본작성, 영상촬영, 편집 - 1일(토)
->    (티스토리, 유튜브, 지메일 동일한 아이디로 만들기)
->5-1 코드정리, 주석달기
->6. 블로그, 포스팅에 게재하기 (일,월)
->     (제작의도, 제작기간 , 사용언어, 게임설명서, 게임스크린샷, GIF파일첨부, 유튜브영상삽입 및 링크,코드)
->     (상호작용하는 객체 GIF파일로 만들기, 게임설명서제작, 게임내부사진촬영)
 
-## 210818
-완료한 것
->1. 게임중 BGM 종료/시작 버튼 구현
->2. Stage이동하는 버튼 F1-F8을 1-8로 변경 (F1~F8은 시연할 때 사용하기 위함 + 맥북은 fn키 눌러야되서 불편함)
->3. moveRight / moveLeft객체 속도조절, 속도조절에 따른 위치조절(4stage)
->4. 구름과 충돌시 player객체가  천천히 떨어지는 구름과 떨어지지 않는 구름을 나눠서 구현
->5. 그 외 세밀한 코드 수정
->6. 맵마다 energy객체 배치
->7. 시작페이지와 clear페이지 제작
+-----
+210822 작성중..
+메일주소
+블로그주소
+등등
 
-#### 상세한 마감시간설정   
->프로그램로직설명서 준비
->
->18, 19일(수/목)최적화,
->
->20(금) 로직설명서, 유튜브대본작성, 영상소스모으기
->
->21(토)영상소스모으기,편집 지메일 유튜브 아이디생성
->
->22(일)코드정리
->
->23(월)포스팅마무리
- 
+
