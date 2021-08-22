@@ -118,8 +118,8 @@ public class JAVADOT_Controller {
 		// createObject (blockContainer)
 		player = level.createObject(20, 600, 20, 20, Color.DARKVIOLET);
 
-//		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
-		mainContainer.getChildren().addAll(bg, level.blockContainer);
+		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
+//		mainContainer.getChildren().addAll(bg, level.blockContainer);
 		return mainContainer;
 	}
 
