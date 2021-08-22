@@ -310,8 +310,9 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
   > 이는 개발자로서 가치를 올리는데 매우 중요한 요소라고 생각합니다
 
 ----
-메일주소
-블로그주소
-등등
+e-mail : coqoa28@gmail.com   
+Blog : http://coqoa.tistory.com  
+GitHub : https://github.com/coqoa   
+YouTube : https://www.youtube.com/channel/UCKX7icIXjZvYNBZTmFhlwOQ   
 
 
