@@ -41,7 +41,6 @@ public class JAVADOT_Controller {
 	LevelData level = new LevelData(); // LevelData클래스 사용하기 위한 level객체 생성
 	JAVADOT_Main mainClass = new JAVADOT_Main();
 
-
 	/// 점프관련 변수, 메서드
 	int jumpNumber;
 	public Text jumpCount = new Text();
@@ -51,9 +50,8 @@ public class JAVADOT_Controller {
 		
 		if (canJump) {
 			playerVelocity = playerVelocity.add(0, -36); 
-			AudioClip jumpSound = new AudioClip( //점프시 효과음 출력
-					Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/pong.mp3").toUri()
-					.toString());
+			//점프시 효과음 출력
+			AudioClip jumpSound = new AudioClip(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/pong.mp3").toUri().toString());
 			jumpSound.play();
 			canJump = false;
 		}
@@ -119,7 +117,6 @@ public class JAVADOT_Controller {
 		player = level.createObject(20, 600, 20, 20, Color.DARKVIOLET);
 
 		mainContainer.getChildren().addAll(bg, level.blockContainer, jumpCount, jumpCountButton);
-//		mainContainer.getChildren().addAll(bg, level.blockContainer);
 		return mainContainer;
 	}
 
@@ -130,7 +127,7 @@ public class JAVADOT_Controller {
 	
 	public void moveBlock() {
 		
-	// player와 energy 충돌시 jumpNumber을 1증가시켜서 jumpCount로 출력하고, energy의 위치를 이동시켜서 화면에서 제외시킨다
+		// player와 energy 충돌시 jumpNumber을 1증가시켜서 jumpCount로 출력하고, energy의 위치를 이동시켜서 화면에서 제외시킨다
 		for (Node energy : level.energys) {
 			if (player.getBoundsInParent().intersects(energy.getBoundsInParent())) {
 				jumpNumber = jumpNumber + 1;
@@ -139,7 +136,7 @@ public class JAVADOT_Controller {
 			}
 		}
 		
-	// restart메서드 실행 관련 객체
+		// restart메서드 실행 관련 객체
 		for (Node reset : level.resets) { // 7 : reset블럭 닿으면 재시작
 			if (player.getBoundsInParent().intersects(reset.getBoundsInParent())) {
 				restartGame();
@@ -206,7 +203,7 @@ public class JAVADOT_Controller {
 			movePlayerX(14);
 		}
 		
-		//player객체가 아래로 낙하해서 범위르 벗어나면 재시작
+		//player객체가 아래로 낙하해서 범위 벗어나면 재시작
 		if(player.getTranslateY() > 1000) {
 			restartGame();
 		}
@@ -218,33 +215,6 @@ public class JAVADOT_Controller {
 			}
 		}
 
-// 임시작성코드
-		//player의 위치확인
-		if (isPressed(KeyCode.C)) {
-			if (player.getTranslateX() > 1) {
-				System.out.println("player X 위치 : " + player.getTranslateX());
-				System.out.println("player Y 위치 : " + player.getTranslateY());
-				System.out.println("levelBlock위치 :" + level.blockContainer.getTranslateX());
-			}
-		}
-		if (isPressed(KeyCode.L)) {
-			if (player.getTranslateX() > 1) {
-				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()-10);
-			}
-		}
-		if (isPressed(KeyCode.K)) {
-			if (player.getTranslateX() > 1) {
-				level.blockContainer.setTranslateX(level.blockContainer.getTranslateX()+10);
-			}
-		}
-		//player 이동
-		if (isPressed(KeyCode.TAB)) {
-			if (player.getTranslateX() > 1) {
-				player.setTranslateX(17447);
-				player.setTranslateY(200);
-			}
-		}
-		
 		// BGM끄고켜기 종료
 		if (isPressed(KeyCode.F12)) { 
 			if (BGMPlay) {
@@ -258,7 +228,7 @@ public class JAVADOT_Controller {
 				BGMPlay = true;
 			}
 		}
-	// Stage이동단축키
+		// Stage이동단축키
 		if (isPressed(KeyCode.DIGIT2)) { // 2 Stage
 			if (player.getTranslateX() > -10) {
 				player.setTranslateX(4575);
@@ -472,7 +442,7 @@ public class JAVADOT_Controller {
 							if (player.getTranslateY() + 10 < block.getTranslateY()) {
 								player.setTranslateY(player.getTranslateY() - 10);
 							} else{
-//								// 붙었을때 player객체의 투명도를 변화시키는 메서드
+								// 붙었을때 player객체의 투명도를 변화시키는 메서드
 								player.setOpacity(0.3);
 							}
 						//충돌시 멈추도록 하는 메서드
@@ -486,7 +456,7 @@ public class JAVADOT_Controller {
 							if (player.getTranslateY() + 10 < block.getTranslateY()) {
 								player.setTranslateY(player.getTranslateY() - 10);
 							} else {
-//								// 붙었을때 player객체의 투명도를 변화시키는 메서드
+								// 붙었을때 player객체의 투명도를 변화시키는 메서드
 								player.setOpacity(0.3);
 							}
 						player.setTranslateY(player.getTranslateY() - 1);
@@ -718,9 +688,7 @@ public class JAVADOT_Controller {
 							// 충돌시 스프링을 밟은효과
 							playerVelocity = playerVelocity.add(0, -50);
 							// 효과음
-							AudioClip longJumpSound = new AudioClip(Paths.get(
-									"/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/longJump.mp3")
-									.toUri().toString());
+							AudioClip longJumpSound = new AudioClip(Paths.get("/Users/coqoa/eclipse-workspace/JAVADOT_project/src/JAVADOT_MVC/source/longJump.mp3").toUri().toString());
 							longJumpSound.play();
 							return;
 						}
