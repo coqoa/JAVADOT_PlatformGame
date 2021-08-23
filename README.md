@@ -15,9 +15,11 @@ javafx로 게임을 만들기 위해 참고할 사이트는 비교적 제한적�
 
 ---
 <br/>
-<br/>
-[시연영상]
-<br/>
+
+
+[![Video Label](https://img.youtube.com/vi/aH3C6Yx5T98/0.jpg)](https://www.youtube.com/watch?v=aH3C6Yx5T98)  
+[이미지를 클릭하시면 유튜브채널로 이동합니다]
+
 <br/>
 
 ---
