@@ -62,20 +62,20 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
 ```
 
 ### 시작페이지
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327825-129d7693-ec04-4355-a57d-f76fcabbd5e4.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327825-129d7693-ec04-4355-a57d-f76fcabbd5e4.gif"/>
   ➥ 시작 페이지입니다. 
   <br/><br/><br/>
   
 ### 기본적인 상호작용
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327903-797d1d00-dae8-4be5-8fc5-7f18bec48001.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327903-797d1d00-dae8-4be5-8fc5-7f18bec48001.gif"/>
   ➥ energy 블럭입니다. (먹으면 점프 횟수가 늘어납니다)
   <br/><br/><br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327923-81fa6e99-3640-42a6-ab2c-4a76f0192097.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327923-81fa6e99-3640-42a6-ab2c-4a76f0192097.gif"/>
   ➥ door 블럭입니다. (접촉시 다음 스테이지로 넘어갑니다)
   <br/><br/><br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327933-b0bde2b6-6539-4082-aa58-51e2f8b13f25.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327933-b0bde2b6-6539-4082-aa58-51e2f8b13f25.gif"/>
   ➥ 화면 아래로 벗어나면 1 Stage부터 재시작합니다. 
   <br/><br/><br/>
 
@@ -92,15 +92,15 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
     </div>
   </details>
   <br/>
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130328181-156452ec-c682-4d4a-b277-1b18ba7fbf7d.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130328181-156452ec-c682-4d4a-b277-1b18ba7fbf7d.gif"/>
   ➥ 해저를 표현하기 위해 바닥은 모래색으로 표현했습니다.    
   <br/><br/><br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326291-f77cc2ff-9adb-4d34-a17d-42ac1c44cc78.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130326291-f77cc2ff-9adb-4d34-a17d-42ac1c44cc78.gif"/>
   ➥ 수중에서 헤엄치는 느낌을 주기위해 닿으면 점프를 할 수 있는 블럭을 곳곳에 배치했습니다.   
   <br/><br/><br/>
 
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326249-311c6b6d-05e0-46b3-87f4-d98442e395b9.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130326249-311c6b6d-05e0-46b3-87f4-d98442e395b9.gif"/>
   ➥ 맵의 디자인 요소로 하얀색 블럭으로 공기방울을 표현했습니다. (속도를 다양하게 구현해서 좀 더 사실적으로 표현할 수 있었습니다)
 
   ➥ 해초류를 그렸고 밟을 수 있는 해초류와 밟지 못하는 해초류는 색으로 구분했습니다.    
@@ -121,8 +121,8 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
   </details>
   <br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326839-847f0cb0-a456-49f4-aa55-9459a5ecfa21.gif"/>
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130326846-b220b105-81ed-436a-9181-42ac0d9dcb11.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130326839-847f0cb0-a456-49f4-aa55-9459a5ecfa21.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130326846-b220b105-81ed-436a-9181-42ac0d9dcb11.gif"/>
   ➥ 해초의 줄기를 표현하기 위해 초록색 객체를 사용했고 이 객체는 밟고 다니거나 옆에 붙을 수 있습니다. (붙었을 때는 투명해지도록 구현을 해 뒀습니다)  
   <br/><br/><br/>
 
@@ -140,15 +140,15 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
     </div>
   </details>
   <br/>
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327591-104a4c3e-6a65-4d5b-979b-662638159b3c.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327591-104a4c3e-6a65-4d5b-979b-662638159b3c.gif"/>
   ➥ 벽에 붙지않는 블럭입니다.  
   <br/><br/><br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327012-0ff28aee-1ee1-4180-9973-e48e5517267c.gif" />
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327012-0ff28aee-1ee1-4180-9973-e48e5517267c.gif" />
   ➥ 닿으면 1 Stage부터 재시작하는 하얀색 블럭입니다.  
   <br/><br/><br/>
 
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327014-bd339ed8-77a9-4196-a951-d21c3d1044af.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327014-bd339ed8-77a9-4196-a951-d21c3d1044af.gif"/>
   ➥ 점프해서 밟으면 높이 뛰는 발판입니다.
   <br/><br/><br/>
 
@@ -167,8 +167,8 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
     </div>
   </details>
   <br/>
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327535-c0fbc530-cd27-4da4-b8bc-c347e192443f.gif"/>
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327530-872bd243-c59f-4472-9480-e5d7edf7a5bc.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327535-c0fbc530-cd27-4da4-b8bc-c347e192443f.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327530-872bd243-c59f-4472-9480-e5d7edf7a5bc.gif"/>
   ➥ 짚라인을 표현하기 위해 만든 블럭으로 Player를 좌,우로 이동시켜줍니다.
   <br/><br/><br/>
 
@@ -187,15 +187,15 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
   </details>
   <br/>
 
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327633-733ea9c1-b35f-4fb6-ad04-a372d95648f5.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327633-733ea9c1-b35f-4fb6-ad04-a372d95648f5.gif"/>
   ➥ 먹구름은 아래에서도 통과할 수 있으며, Player가 두려워도 앞으로 나아가는 것을 표현하고자 덜덜 떨게 만들었습니다.  
   <br/><br/><br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327643-7e7663a1-1313-4c2d-94c1-a0225e27f6a0.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327643-7e7663a1-1313-4c2d-94c1-a0225e27f6a0.gif"/>
   ➥ 비를 맞으면 1 Stage부터 재시작합니다.  
   <br/><br/><br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327694-7fda4249-1831-4b97-ac73-933da51d7750.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327694-7fda4249-1831-4b97-ac73-933da51d7750.gif"/>
   ➥ 공기저항을 표현하기 위해 만들어진 블럭입니다. (낙하속도가 줄어듭니다)
   <br/><br/><br/>
 
@@ -214,7 +214,7 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
   </details>
   <br/>
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327720-ae40655d-10d1-4249-b858-d6044ae5f941.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327720-ae40655d-10d1-4249-b858-d6044ae5f941.gif"/>
   ➥ 위, 아래로 움직이는 블럭입니다. (아래에서 통과할 수 없습니다)
   <br/><br/><br/>
 
@@ -232,12 +232,12 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
   </details>
   <br/>
 
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327753-48df59fd-9ed5-485d-aa3a-b10c358ec30e.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327753-48df59fd-9ed5-485d-aa3a-b10c358ec30e.gif"/>
   ➥ 번개입니다. (맞으면 1 Stage부터 재시작합니다)
   <br/><br/><br/>
 
   
-  <img width="40%" src="https://user-images.githubusercontent.com/81023768/130327761-21cfe992-2eba-447f-b49b-d6f42d347f11.gif"/>
+  <img width="45%" src="https://user-images.githubusercontent.com/81023768/130327761-21cfe992-2eba-447f-b49b-d6f42d347f11.gif"/>
   ➥ 태양입니다. (태양에 들어가면 게임 클리어입니다)
   <br/><br/><br/>
 
@@ -257,7 +257,8 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
   
 ----
 
-[로직설명]
+<img width="100%" src="https://user-images.githubusercontent.com/81023768/130389405-5248fe64-a27f-43ee-a6b4-82aaf531f125.png"/>
+
 
 ----
 
