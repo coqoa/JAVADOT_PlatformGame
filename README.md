@@ -1,6 +1,10 @@
- ---
- # JAVADOT
+# JAVADOT
 
+ 
+ #### 210906 추가 : 다운로드 주소
+ https://drive.google.com/drive/folders/1jNl6p5XBxDWVM7HGT5-Dna-m_PYRrLW1?usp=sharing
+ 
+---
  ### 제작동기 및 목표
 
 처음 배우는 언어로 `자바`를 선택했고 자바의 GUI인 `javafx`로 게임을 만들어 보고 싶었습니다.  
@@ -25,7 +29,7 @@ javafx로 게임을 만들기 위해 참고할 사이트는 비교적 제한적�
 ---
  
 
-## JAVADOT은 도트 플랫포머 게임입니다.  
+### JAVADOT은 도트 플랫포머 게임입니다.  
 
 ### 게임의 목표  
 ```
