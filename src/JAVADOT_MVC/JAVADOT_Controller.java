@@ -23,7 +23,7 @@ import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+    
 public class JAVADOT_Controller {
 	// 변수선언
 	public Stage stage;
