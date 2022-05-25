@@ -272,15 +272,18 @@ Player와 상호작용하는 블럭들을 적절히 이용해서 스테이지를
    >  [javafx의 scene을 이동시키는 문제](https://coqoa.tistory.com/56?category=952814)   
 
 - 화면 이동시 프레임 드랍 현상  
-  > 1. 화면을 이동시키는 moveCamera()메서드를 멀티스레드로 관리
-  >> [moveCamera()메서드 멀티스레드관리](https://coqoa.tistory.com/52?category=952814) 
-  > 2. Player객체의 프레임당 이동거리조절 (1->0.5로 줄여서 같은 시간 대비 더 많은 프레임을 그리도록 함)   
+  > 1. Player객체의 프레임당 이동거리조절 (1->0.5로 줄여서 같은 시간 대비 더 많은 프레임을 그리도록 함)   
   >> [Player객체의 프레임당 이동거리조절](https://coqoa.tistory.com/61?category=952814)   
 
 - 처음 실행시 걸리는 렉을해결하기위한 방법  
   > 1. mainContainer를 구성하는 mainPage()메서드를 멀티스레드로 관리  
   > 2. ObjectData1.java에서 0으로 표현되는 쓸데없는 리소스 정리  
   >> [렉을해결하기위한 방법](https://coqoa.tistory.com/69?category=952814)
+ 
+- 시연 및 개발을 위한 단축키 생성  
+  > 1. 시연하거나 개발할 때 페이지 이동을 해야하는데 단축키를 통해 쉽게 이동할 수 있도록 구현
+  >> [링크](https://coqoa.tistory.com/65?category=952814) 
+
 
 ----
 
